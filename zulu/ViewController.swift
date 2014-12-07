@@ -12,7 +12,7 @@ import AddressBookUI
 
 class ViewController: UIViewController {
   
-  var addressBook : ABAddressBook!
+  let addressBook = APAddressBook()
   
  /*
   * UI Elements.
@@ -29,9 +29,15 @@ class ViewController: UIViewController {
   override func viewDidLoad() {
     super.viewDidLoad()
     
-    ABAddressBookRequestAccessWithCompletion(
-      addressBook, { granted in
-        self.moveLogoUp()
+    
+    self.addressBook.loadContacts({
+      (contacts: [AnyObject]!, error: NSError!) in
+        if (contacts != nil) {
+          self.moveLogoUp()
+        }
+        else if (error != nil) {
+          print("Could not load contacts")
+        }
     })
   }
   
