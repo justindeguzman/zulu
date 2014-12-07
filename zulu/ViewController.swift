@@ -44,6 +44,8 @@ UITableViewDataSource {
   override func viewDidLoad() {
     super.viewDidLoad()
     
+    println(managedObjectContext!)
+    
     self.fetchAddressBookData()
     
     // Add an event handler to load contacts when the app opens
@@ -76,8 +78,6 @@ UITableViewDataSource {
         
         for contact in contacts {
           let currentContact = contact as APContact
-          
-          print(currentContact.firstName)
         }
       } else if (error != nil) {
         var alert = UIAlertController(
