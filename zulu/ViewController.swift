@@ -7,19 +7,60 @@
 //
 
 import UIKit
+import AddressBook
+import AddressBookUI
 
 class ViewController: UIViewController {
-
+  
+  var addressBook : ABAddressBook!
+  
+ /*
+  * UI Elements.
+  */
+  
+  @IBOutlet weak var logo: UILabel!
+  
+  /*
+   * Constraints.
+   */
+  
+  @IBOutlet weak var logoYConstraint: NSLayoutConstraint!
+  
   override func viewDidLoad() {
     super.viewDidLoad()
-    // Do any additional setup after loading the view, typically from a nib.
+    
+    ABAddressBookRequestAccessWithCompletion(
+      addressBook, { granted in
+        self.moveLogoUp()
+    })
   }
-
-  override func didReceiveMemoryWarning() {
-    super.didReceiveMemoryWarning()
-    // Dispose of any resources that can be recreated.
+  
+  /**
+   * Animates the logo to the top of the view.
+   */
+  
+  func moveLogoUp() {
+    print("hello")
+    
+    self.view.layoutIfNeeded()
+    let modifier : CGFloat = 0.7
+    
+    UIView.animateWithDuration(0.4,
+      animations: {
+        self.logo.transform = CGAffineTransformScale(
+          self.logo.transform, modifier, modifier
+        )
+        self.view.layoutIfNeeded()
+      }, completion: { finished in
+        UIView.animateWithDuration(0.4,
+          animations: {
+            self.logoYConstraint.constant -= 130.0
+            self.view.layoutIfNeeded()
+          }, completion: { finished in }
+        )
+      
+      }
+    )
   }
-
-
 }
 
