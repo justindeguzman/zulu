@@ -99,11 +99,9 @@
 			children = (
 				8B3127211A1A46B30054FF44 /* AppDelegate.swift */,
 				8B3127261A1A46B30054FF44 /* ViewController.swift */,
-				8B3127281A1A46B30054FF44 /* Main.storyboard */,
+				8BA8C4EE1A356BA30069F03E /* Storyboards */,
+				8BA8C4ED1A356B950069F03E /* Core Data */,
 				8B31272B1A1A46B30054FF44 /* Images.xcassets */,
-				8B31272D1A1A46B30054FF44 /* LaunchScreen.xib */,
-				8B3127231A1A46B30054FF44 /* zulu.xcdatamodeld */,
-				8B924A0D1A350DA300CED3A4 /* Contact.swift */,
 				8B31271F1A1A46B30054FF44 /* Supporting Files */,
 			);
 			path = zulu;
@@ -132,6 +130,24 @@
 				8B3127391A1A46B30054FF44 /* Info.plist */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		8BA8C4ED1A356B950069F03E /* Core Data */ = {
+			isa = PBXGroup;
+			children = (
+				8B3127231A1A46B30054FF44 /* zulu.xcdatamodeld */,
+				8B924A0D1A350DA300CED3A4 /* Contact.swift */,
+			);
+			name = "Core Data";
+			sourceTree = "<group>";
+		};
+		8BA8C4EE1A356BA30069F03E /* Storyboards */ = {
+			isa = PBXGroup;
+			children = (
+				8B3127281A1A46B30054FF44 /* Main.storyboard */,
+				8B31272D1A1A46B30054FF44 /* LaunchScreen.xib */,
+			);
+			name = Storyboards;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */

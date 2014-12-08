@@ -33,7 +33,7 @@ UITableViewDataSource {
   */
   
   @IBOutlet weak var logo: UILabel!
-  @IBOutlet weak var activityIndicatorView: UIActivityIndicatorView!
+  @IBOutlet weak var tableView: UITableView!
   
   /**
    * Constraints.
@@ -44,8 +44,6 @@ UITableViewDataSource {
   override func viewDidLoad() {
     super.viewDidLoad()
     
-    println(managedObjectContext!)
-    
     self.fetchAddressBookData()
     
     // Add an event handler to load contacts when the app opens
@@ -53,14 +51,46 @@ UITableViewDataSource {
       self, selector:"fetchAddressBookData",
       name: UIApplicationWillEnterForegroundNotification, object: nil)
   }
+  
+  /**
+   * Fetches the contact data from the address book.
+   *
+   * @param contact The contact to be saved.
+   */
 
+  func saveContact(contact : APContact) {
+    let row = NSEntityDescription.insertNewObjectForEntityForName(
+      "Contact", inManagedObjectContext: self.managedObjectContext!
+      ) as Contact
+    
+    if(contact.firstName != nil && contact.firstName != "") {
+      row.firstName = contact.firstName
+      print("\(row.firstName) ")
+    }
+    
+    if(contact.lastName != nil && contact.lastName != "") {
+      row.lastName = contact.lastName
+      print("\(row.lastName) ")
+    }
+    
+    if(contact.phones != nil && contact.phones.count > 0) {
+      row.phone = contact.phones[0] as String
+      print("\(contact.phones[0]) ")
+    }
+    
+    if(contact.emails != nil && contact.emails.count > 0) {
+      row.email = contact.emails[0] as String
+      print("\(contact.emails[0]) ")
+    }
+    
+    print("\n")
+  }
+  
  /**
   * Fetches the contact data from the address book.
   */
   
   func fetchAddressBookData() {
-    activityIndicatorView.startAnimating()
-    
     // Specify the address book fields to fetch
     self.addressBook.fieldsMask =
       APContactField.FirstName |
@@ -71,13 +101,12 @@ UITableViewDataSource {
     
     self.addressBook.loadContacts({
       (contacts: [AnyObject]!, error: NSError!) in
-      self.activityIndicatorView.stopAnimating()
       
       if (contacts != nil) {
         self.moveLogoUp()
         
         for contact in contacts {
-          let currentContact = contact as APContact
+          self.saveContact(contact as APContact)
         }
       } else if (error != nil) {
         var alert = UIAlertController(
@@ -119,7 +148,11 @@ UITableViewDataSource {
             animations: {
               self.logoYConstraint.constant -= 130.0
               self.view.layoutIfNeeded()
-            }, completion: { finished in }
+            }, completion: { finished in
+              UIView.animateWithDuration(0.4, animations: {
+                self.tableView.alpha = 1.0
+              })
+            }
           )
           
         }
@@ -142,4 +175,3 @@ UITableViewDataSource {
       
   }
 }
-
