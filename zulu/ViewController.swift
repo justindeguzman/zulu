@@ -27,6 +27,8 @@ UITableViewDataSource {
   
   let addressBook = APAddressBook()
   var logoDidMoveUp = false
+  var savedContacts = [Contact]()
+
   
  /**
   * UI Elements.
@@ -34,6 +36,7 @@ UITableViewDataSource {
   
   @IBOutlet weak var logo: UILabel!
   @IBOutlet weak var tableView: UITableView!
+  @IBOutlet weak var searchBar: UISearchBar!
   
   /**
    * Constraints.
@@ -43,13 +46,34 @@ UITableViewDataSource {
   
   override func viewDidLoad() {
     super.viewDidLoad()
-    
+
     self.fetchAddressBookData()
     
     // Add an event handler to load contacts when the app opens
     NSNotificationCenter.defaultCenter().addObserver(
       self, selector:"fetchAddressBookData",
       name: UIApplicationWillEnterForegroundNotification, object: nil)
+  }
+  
+  /**
+   * Loads the table view data from core data.
+   *
+   * @param contact The contact to be saved.
+   */
+  
+  func loadTableData() {
+    let fetchRequest = NSFetchRequest(entityName: "Contact")
+    
+    let sortDescriptor = NSSortDescriptor(key: "lastName", ascending: true)
+    
+    fetchRequest.sortDescriptors = [sortDescriptor]
+    
+    if let fetchResults = managedObjectContext!.executeFetchRequest(
+      fetchRequest, error: nil) as? [Contact] {
+      savedContacts = fetchResults
+    }
+    
+    self.tableView.reloadData()
   }
   
   /**
@@ -65,25 +89,19 @@ UITableViewDataSource {
     
     if(contact.firstName != nil && contact.firstName != "") {
       row.firstName = contact.firstName
-      print("\(row.firstName) ")
     }
     
     if(contact.lastName != nil && contact.lastName != "") {
       row.lastName = contact.lastName
-      print("\(row.lastName) ")
     }
     
     if(contact.phones != nil && contact.phones.count > 0) {
       row.phone = contact.phones[0] as String
-      print("\(contact.phones[0]) ")
     }
     
     if(contact.emails != nil && contact.emails.count > 0) {
       row.email = contact.emails[0] as String
-      print("\(contact.emails[0]) ")
     }
-    
-    print("\n")
   }
   
  /**
@@ -108,6 +126,8 @@ UITableViewDataSource {
         for contact in contacts {
           self.saveContact(contact as APContact)
         }
+        
+        self.loadTableData()
       } else if (error != nil) {
         var alert = UIAlertController(
           title: "Error",
@@ -151,6 +171,7 @@ UITableViewDataSource {
             }, completion: { finished in
               UIView.animateWithDuration(0.4, animations: {
                 self.tableView.alpha = 1.0
+                self.searchBar.alpha = 1.0
               })
             }
           )
@@ -160,18 +181,28 @@ UITableViewDataSource {
     }
   }
   
-  /**
+ /**
   * TableViewDataSource
   */
   
   func tableView(tableView: UITableView, numberOfRowsInSection section: Int)
     -> Int {
-      return 1
+//      return 10
+      return savedContacts.count
   }
   
   func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath:
     NSIndexPath) -> UITableViewCell {
-      return UITableViewCell.alloc()
+      var cell = tableView.dequeueReusableCellWithIdentifier("ContactCell")
+        as ContactCell
       
+      if(savedContacts.count > 0) {
+        let contact = savedContacts[indexPath.row]
+        cell.name.text = "\(contact.firstName)"
+      }
+      
+//      cell.name.text = "Hello!"
+      
+      return cell
   }
 }

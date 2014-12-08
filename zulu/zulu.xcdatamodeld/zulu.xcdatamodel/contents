@@ -8,6 +8,6 @@
         <attribute name="photo" optional="YES" attributeType="Transformable" syncable="YES"/>
     </entity>
     <elements>
-        <element name="Contact" positionX="-144" positionY="20" width="128" height="118"/>
+        <element name="Contact" positionX="-144" positionY="20" width="128" height="120"/>
     </elements>
 </model>
