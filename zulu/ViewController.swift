@@ -96,11 +96,11 @@ UITableViewDataSource {
     }
     
     if(contact.phones != nil && contact.phones.count > 0) {
-      row.phone = contact.phones[0] as String
+      row.phone = (contact.phones[0] as String)
     }
     
     if(contact.emails != nil && contact.emails.count > 0) {
-      row.email = contact.emails[0] as String
+      row.email = (contact.emails[0] as String)
     }
   }
   
@@ -195,6 +195,12 @@ UITableViewDataSource {
     NSIndexPath) -> UITableViewCell {
       var cell = tableView.dequeueReusableCellWithIdentifier("ContactCell")
         as ContactCell
+      
+      // Make profile picture a circle
+      cell.profilePicture.layer.cornerRadius =
+        cell.profilePicture.frame.size.height / 2
+      cell.profilePicture.layer.masksToBounds = true
+      cell.profilePicture.layer.borderWidth = 0
       
       if(savedContacts.count > 0) {
         var name = ""

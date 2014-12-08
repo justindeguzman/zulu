@@ -9,5 +9,6 @@
 import UIKit
 
 class ContactCell: UITableViewCell {
+  @IBOutlet weak var profilePicture: UIImageView!
   @IBOutlet weak var name: UILabel!
 }
