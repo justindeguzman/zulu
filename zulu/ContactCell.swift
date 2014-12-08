@@ -11,4 +11,7 @@ import UIKit
 class ContactCell: UITableViewCell {
   @IBOutlet weak var profilePicture: UIImageView!
   @IBOutlet weak var name: UILabel!
+  @IBOutlet weak var buttonCall: UIButton!
+  @IBOutlet weak var buttonMessage: UIButton!
+  @IBOutlet weak var buttonEmail: UIButton!
 }

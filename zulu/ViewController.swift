@@ -28,6 +28,7 @@ UITableViewDataSource {
   let addressBook = APAddressBook()
   var logoDidMoveUp = false
   var savedContacts = [Contact]()
+  var cellHeights = [CGFloat]()
 
   
  /**
@@ -64,14 +65,15 @@ UITableViewDataSource {
   func loadTableData() {
     let fetchRequest = NSFetchRequest(entityName: "Contact")
     
-    let sortDescriptor = NSSortDescriptor(key: "lastName", ascending: true)
-    
+    let sortDescriptor = NSSortDescriptor(key: "lastName", ascending: true)    
     fetchRequest.sortDescriptors = [sortDescriptor]
     
     if let fetchResults = managedObjectContext!.executeFetchRequest(
       fetchRequest, error: nil) as? [Contact] {
       savedContacts = fetchResults
     }
+    
+    cellHeights = [CGFloat](count: savedContacts.count, repeatedValue: 150.0)
     
     self.tableView.reloadData()
   }
@@ -181,8 +183,56 @@ UITableViewDataSource {
     }
   }
   
+  /**
+   * Table View Delegate
+   */
+  
+  func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath:
+    NSIndexPath) {
+      let currentHeight = cellHeights[indexPath.row]
+      var cell = tableView.cellForRowAtIndexPath(indexPath) as ContactCell
+      
+      if(currentHeight > 150.0) {
+        cellHeights[indexPath.row] = 150.0
+        
+        // Delay hiding the cell contents to allow the cell to collapse
+        dispatch_after(
+          dispatch_time(
+            DISPATCH_TIME_NOW,
+            Int64(0.2 * Double(NSEC_PER_SEC))
+          ),
+          dispatch_get_main_queue(), {
+            cell.buttonCall.hidden = true
+            cell.buttonMessage.hidden = true
+            cell.buttonEmail.hidden = true
+        })
+      } else {
+        cellHeights[indexPath.row] = 200.0
+        cell.buttonCall.hidden = false
+        cell.buttonMessage.hidden = false
+        cell.buttonEmail.hidden = false
+      }
+      
+      self.tableView.deselectRowAtIndexPath(indexPath, animated: true)
+      
+      self.tableView.separatorStyle = UITableViewCellSeparatorStyle.None
+      self.tableView.separatorStyle = UITableViewCellSeparatorStyle.SingleLine
+
+      self.tableView.beginUpdates()
+      self.tableView.endUpdates()
+  }
+  
+  func tableView(tableView: UITableView, heightForRowAtIndexPath
+    indexPath: NSIndexPath) -> CGFloat {
+    if(self.savedContacts.count > 0) {
+      return cellHeights[indexPath.row]
+    }
+    
+    return 0.0
+  }
+  
  /**
-  * TableViewDataSource
+  * Table View Data Source
   */
   
   func tableView(tableView: UITableView, numberOfRowsInSection section: Int)
@@ -216,6 +266,20 @@ UITableViewDataSource {
         }
         
         cell.name.text = name
+        
+        if(contact.phone != nil) {
+          cell.buttonCall.titleLabel?.text = contact.phone!
+          cell.buttonMessage.titleLabel?.text = contact.phone!
+        } else {
+          cell.buttonCall.userInteractionEnabled = false
+          cell.buttonMessage.userInteractionEnabled = false
+        }
+        
+        if(contact.email != nil) {
+          cell.buttonEmail.titleLabel?.text = contact.email!
+        } else {
+          cell.buttonEmail.userInteractionEnabled = false
+        }
       }
       
       return cell
