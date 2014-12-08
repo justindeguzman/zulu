@@ -197,11 +197,20 @@ UITableViewDataSource {
         as ContactCell
       
       if(savedContacts.count > 0) {
+        var name = ""
+        
         let contact = savedContacts[indexPath.row]
-        cell.name.text = "\(contact.firstName)"
+        
+        if(contact.firstName != nil) {
+          name += contact.firstName!
+        }
+        
+        if(contact.lastName != nil) {
+          name += " " + contact.lastName!
+        }
+        
+        cell.name.text = name
       }
-      
-//      cell.name.text = "Hello!"
       
       return cell
   }
