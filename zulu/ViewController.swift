@@ -28,7 +28,8 @@ UITableViewDataSource {
   let addressBook = APAddressBook()
   var logoDidMoveUp = false
   var savedContacts = [Contact]()
-  var cellHeights = [CGFloat]()
+  var openedCells = [Bool]()
+  var didAddNewContact = false
 
   
  /**
@@ -64,8 +65,8 @@ UITableViewDataSource {
   
   func loadTableData() {
     let fetchRequest = NSFetchRequest(entityName: "Contact")
-    
-    let sortDescriptor = NSSortDescriptor(key: "lastName", ascending: true)    
+    let sortDescriptor = NSSortDescriptor(key: "lastName", ascending: true, selector: "caseInsensitiveCompare:")
+
     fetchRequest.sortDescriptors = [sortDescriptor]
     
     if let fetchResults = managedObjectContext!.executeFetchRequest(
@@ -73,9 +74,22 @@ UITableViewDataSource {
       savedContacts = fetchResults
     }
     
-    cellHeights = [CGFloat](count: savedContacts.count, repeatedValue: 150.0)
+    if(didAddNewContact) {
+      openedCells = [Bool](count: savedContacts.count, repeatedValue: false)
+      didAddNewContact = false
+    }
     
     self.tableView.reloadData()
+  }
+  
+ /**
+  * Checks if an a string is empty.
+  *
+  * @param contact The contact to be saved.
+  */
+  
+  func isEmptyString(str: String?) -> Bool {
+    return str == nil || str == ""
   }
   
   /**
@@ -85,24 +99,64 @@ UITableViewDataSource {
    */
 
   func saveContact(contact : APContact) {
-    let row = NSEntityDescription.insertNewObjectForEntityForName(
+    var predicate : NSPredicate = NSPredicate()
+    
+    let containsFirstName = !isEmptyString(contact.firstName)
+    let containsLastName = !isEmptyString(contact.lastName)
+    
+    if(containsFirstName && containsLastName) {
+      predicate = NSPredicate(format: "firstName = %@ AND lastName = %@",
+        argumentArray: [contact.firstName, contact.lastName])
+    } else if(containsFirstName && !containsLastName) {
+      NSPredicate(format: "firstName = %@", argumentArray: [contact.firstName])
+    } else if(!containsFirstName && containsLastName) {
+      NSPredicate(format: "lastName = %@", argumentArray: [contact.lastName])
+    } else {
+      return
+    }
+    
+    // Check if the contact already exists
+    let request = NSFetchRequest()
+    request.entity =  NSEntityDescription.entityForName(
       "Contact", inManagedObjectContext: self.managedObjectContext!
-      ) as Contact
+    )
+    request.predicate = predicate
+    //request.predicate = NSPredicate(format: predicateString)
+    request.fetchLimit = 1
+
+    var error: NSError?
     
-    if(contact.firstName != nil && contact.firstName != "") {
-      row.firstName = contact.firstName
+    var containsContact = self.managedObjectContext!.countForFetchRequest(
+      request, error: &error
+    )
+    
+    if(error != nil) {
+      print(error)
     }
     
-    if(contact.lastName != nil && contact.lastName != "") {
-      row.lastName = contact.lastName
-    }
     
-    if(contact.phones != nil && contact.phones.count > 0) {
-      row.phone = (contact.phones[0] as String)
-    }
-    
-    if(contact.emails != nil && contact.emails.count > 0) {
-      row.email = (contact.emails[0] as String)
+    if(containsContact == 0) {
+      didAddNewContact = true
+      
+      let row = NSEntityDescription.insertNewObjectForEntityForName(
+        "Contact", inManagedObjectContext: self.managedObjectContext!
+        ) as Contact
+      
+      if(!isEmptyString(contact.firstName)) {
+        row.firstName = contact.firstName
+      }
+      
+      if(!isEmptyString(contact.lastName)) {
+        row.lastName = contact.lastName
+      }
+      
+      if(contact.phones != nil && contact.phones.count > 0) {
+        row.phone = (contact.phones[0] as String)
+      }
+      
+      if(contact.emails != nil && contact.emails.count > 0) {
+        row.email = (contact.emails[0] as String)
+      }
     }
   }
   
@@ -148,6 +202,12 @@ UITableViewDataSource {
     })
   }
   
+  func showHiddenCellElements(cell: ContactCell, show: Bool) {
+    cell.buttonCall.hidden = !show
+    cell.buttonMessage.hidden = !show
+    cell.buttonEmail.hidden = !show
+  }
+  
   /**
    * Animates the logo to the top of the view.
    */
@@ -189,12 +249,10 @@ UITableViewDataSource {
   
   func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath:
     NSIndexPath) {
-      let currentHeight = cellHeights[indexPath.row]
+      let cellIsOpened = openedCells[indexPath.row]
       var cell = tableView.cellForRowAtIndexPath(indexPath) as ContactCell
       
-      if(currentHeight > 150.0) {
-        cellHeights[indexPath.row] = 150.0
-        
+      if(cellIsOpened) {
         // Delay hiding the cell contents to allow the cell to collapse
         dispatch_after(
           dispatch_time(
@@ -207,12 +265,19 @@ UITableViewDataSource {
             cell.buttonEmail.hidden = true
         })
       } else {
-        cellHeights[indexPath.row] = 200.0
-        cell.buttonCall.hidden = false
-        cell.buttonMessage.hidden = false
-        cell.buttonEmail.hidden = false
+        self.showHiddenCellElements(cell, show: true)
+        if(cell.phoneNumber == "") {
+          cell.buttonCall.alpha = 0.5
+          cell.buttonMessage.alpha = 0.5
+        }
+        
+        if(cell.email == "") {
+          cell.buttonEmail.alpha = 0.5
+        }
       }
       
+      openedCells[indexPath.row] = !cellIsOpened
+
       self.tableView.deselectRowAtIndexPath(indexPath, animated: true)
       
       self.tableView.separatorStyle = UITableViewCellSeparatorStyle.None
@@ -225,7 +290,7 @@ UITableViewDataSource {
   func tableView(tableView: UITableView, heightForRowAtIndexPath
     indexPath: NSIndexPath) -> CGFloat {
     if(self.savedContacts.count > 0) {
-      return cellHeights[indexPath.row]
+      return openedCells[indexPath.row] ? 200.0 : 150.0
     }
     
     return 0.0
@@ -237,7 +302,6 @@ UITableViewDataSource {
   
   func tableView(tableView: UITableView, numberOfRowsInSection section: Int)
     -> Int {
-//      return 10
       return savedContacts.count
   }
   
@@ -268,18 +332,22 @@ UITableViewDataSource {
         cell.name.text = name
         
         if(contact.phone != nil) {
-          cell.buttonCall.titleLabel?.text = contact.phone!
-          cell.buttonMessage.titleLabel?.text = contact.phone!
+          cell.phoneNumber = contact.phone!
+          cell.buttonCall.alpha = 1.0
+          cell.buttonMessage.alpha = 1.0
         } else {
-          cell.buttonCall.userInteractionEnabled = false
-          cell.buttonMessage.userInteractionEnabled = false
+          cell.buttonCall.alpha = 0.5
+          cell.buttonMessage.alpha = 0.5
         }
         
         if(contact.email != nil) {
-          cell.buttonEmail.titleLabel?.text = contact.email!
+          cell.email = contact.email!
+          cell.buttonEmail.alpha = 1.0
         } else {
-          cell.buttonEmail.userInteractionEnabled = false
+          cell.buttonEmail.alpha = 0.5
         }
+        
+        showHiddenCellElements(cell, show: openedCells[indexPath.row])
       }
       
       return cell

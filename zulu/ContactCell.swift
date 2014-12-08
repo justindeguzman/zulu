@@ -14,4 +14,21 @@ class ContactCell: UITableViewCell {
   @IBOutlet weak var buttonCall: UIButton!
   @IBOutlet weak var buttonMessage: UIButton!
   @IBOutlet weak var buttonEmail: UIButton!
+  
+  var phoneNumber : NSString = ""
+  var email: NSString = ""
+  
+  @IBAction func didPressButtonCall() {
+    let url = NSURL(string: "telprompt://9172384239")!
+    UIApplication.sharedApplication().openURL(url)
+  }
+  
+  @IBAction func didPressButtonMessage() {
+    let url = NSURL(string: "sms://9172384239")!
+    UIApplication.sharedApplication().openURL(url)
+  }
+  
+  @IBAction func didPressButtonEmail() {
+    println("Email \(self.email)")
+  }
 }
