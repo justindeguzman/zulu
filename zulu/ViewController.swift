@@ -52,6 +52,8 @@ UITableViewDataSource, UISearchBarDelegate {
     // Close the keyboard when people click anywhere on the screen
     tableView.keyboardDismissMode = UIScrollViewKeyboardDismissMode.OnDrag
     
+    tableView.contentInset = UIEdgeInsetsMake(0.0, 0.0, 50.0, 0.0)
+    
     self.fetchAddressBookData()
     
     // Add an event handler to load contacts when the app opens
@@ -307,6 +309,30 @@ UITableViewDataSource, UISearchBarDelegate {
     square.layer.cornerRadius = square.frame.size.height / 2
     square.layer.masksToBounds = true
     square.layer.borderWidth = 0
+  }
+  
+  func searchBar(searchBar: UISearchBar, textDidChange searchText: String) {
+    let fetchRequest = NSFetchRequest(entityName: "Contact")
+    
+    let sortDescriptor = NSSortDescriptor(key: "lastName", ascending: true,
+      selector: "caseInsensitiveCompare:")
+    
+    if(countElements(searchText) > 0) {
+      fetchRequest.predicate = NSPredicate(
+        format: "(firstName CONTAINS[c] %@) OR (lastName CONTAINS[c] %@)",
+        argumentArray: [searchText, searchText])
+    }
+    
+    fetchRequest.sortDescriptors = [sortDescriptor]
+    
+    if let fetchResults = managedObjectContext!.executeFetchRequest(
+      fetchRequest, error: nil) as? [Contact] {
+        savedContacts = fetchResults
+    }
+    
+    openedCells = [Bool](count: savedContacts.count, repeatedValue: false)
+    
+    self.tableView.reloadData()
   }
   
  /**
