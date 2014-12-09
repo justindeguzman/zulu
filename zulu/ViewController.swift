@@ -13,7 +13,7 @@ import AddressBook
 import AddressBookUI
 
 class ViewController: UIViewController, UITableViewDelegate,
-UITableViewDataSource {
+UITableViewDataSource, UISearchBarDelegate {
   
   lazy var managedObjectContext : NSManagedObjectContext? = {
     let appDelegate = UIApplication.sharedApplication().delegate as AppDelegate
@@ -49,12 +49,20 @@ UITableViewDataSource {
   override func viewDidLoad() {
     super.viewDidLoad()
 
+    // Close the keyboard when people click anywhere on the screen
+//    self.view.addGestureRecognizer(UITapGestureRecognizer(target: searchBar,
+//      action: "resignFirstResponder"))
+    
     self.fetchAddressBookData()
     
     // Add an event handler to load contacts when the app opens
     NSNotificationCenter.defaultCenter().addObserver(
       self, selector:"fetchAddressBookData",
       name: UIApplicationWillEnterForegroundNotification, object: nil)
+  }
+  
+  func searchBarSearchButtonClicked(searchBar: UISearchBar) {
+    searchBar.resignFirstResponder()
   }
   
   /**
@@ -130,11 +138,6 @@ UITableViewDataSource {
       request, error: &error
     )
     
-    if(error != nil) {
-      print(error)
-    }
-    
-    
     if(containsContact == 0) {
       didAddNewContact = true
       
@@ -156,6 +159,10 @@ UITableViewDataSource {
       
       if(contact.emails != nil && contact.emails.count > 0) {
         row.email = (contact.emails[0] as String)
+      }
+      
+      if(contact.photo != nil) {
+        row.photo = contact.photo
       }
     }
   }
@@ -312,7 +319,7 @@ UITableViewDataSource {
       
       // Make profile picture a circle
       cell.profilePicture.layer.cornerRadius =
-        cell.profilePicture.frame.size.height / 2
+      cell.profilePicture.frame.size.height / 2
       cell.profilePicture.layer.masksToBounds = true
       cell.profilePicture.layer.borderWidth = 0
       
@@ -345,6 +352,12 @@ UITableViewDataSource {
           cell.buttonEmail.alpha = 1.0
         } else {
           cell.buttonEmail.alpha = 0.5
+        }
+        
+        if(contact.photo != nil) {
+          cell.profilePicture.image = (contact.photo as UIImage)
+        } else {
+          cell.profilePicture.image = UIImage(named: "default-profile")
         }
         
         showHiddenCellElements(cell, show: openedCells[indexPath.row])
