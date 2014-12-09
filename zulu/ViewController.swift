@@ -50,8 +50,7 @@ UITableViewDataSource, UISearchBarDelegate {
     super.viewDidLoad()
 
     // Close the keyboard when people click anywhere on the screen
-//    self.view.addGestureRecognizer(UITapGestureRecognizer(target: searchBar,
-//      action: "resignFirstResponder"))
+    tableView.keyboardDismissMode = UIScrollViewKeyboardDismissMode.OnDrag
     
     self.fetchAddressBookData()
     
@@ -73,7 +72,8 @@ UITableViewDataSource, UISearchBarDelegate {
   
   func loadTableData() {
     let fetchRequest = NSFetchRequest(entityName: "Contact")
-    let sortDescriptor = NSSortDescriptor(key: "lastName", ascending: true, selector: "caseInsensitiveCompare:")
+    let sortDescriptor = NSSortDescriptor(key: "lastName", ascending: true,
+      selector: "caseInsensitiveCompare:")
 
     fetchRequest.sortDescriptors = [sortDescriptor]
     
@@ -297,10 +297,16 @@ UITableViewDataSource, UISearchBarDelegate {
   func tableView(tableView: UITableView, heightForRowAtIndexPath
     indexPath: NSIndexPath) -> CGFloat {
     if(self.savedContacts.count > 0) {
-      return openedCells[indexPath.row] ? 200.0 : 150.0
+      return openedCells[indexPath.row] ? 250.0 : 180.0
     }
     
     return 0.0
+  }
+  
+  func makeCircle(square: UIView) {
+    square.layer.cornerRadius = square.frame.size.height / 2
+    square.layer.masksToBounds = true
+    square.layer.borderWidth = 0
   }
   
  /**
@@ -318,10 +324,12 @@ UITableViewDataSource, UISearchBarDelegate {
         as ContactCell
       
       // Make profile picture a circle
-      cell.profilePicture.layer.cornerRadius =
-      cell.profilePicture.frame.size.height / 2
-      cell.profilePicture.layer.masksToBounds = true
-      cell.profilePicture.layer.borderWidth = 0
+      self.makeCircle(cell.profilePicture)
+      
+      // Make action buttons circles
+      self.makeCircle(cell.buttonCall)
+      self.makeCircle(cell.buttonMessage)
+      self.makeCircle(cell.buttonEmail)
       
       if(savedContacts.count > 0) {
         var name = ""

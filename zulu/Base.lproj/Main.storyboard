@@ -28,46 +28,52 @@
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <inset key="separatorInset" minX="30" minY="0.0" maxX="30" maxY="0.0"/>
                                 <prototypes>
-                                    <tableViewCell contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" reuseIdentifier="ContactCell" rowHeight="213" id="Xsw-vy-Qv5" customClass="ContactCell" customModule="zulu" customModuleProvider="target">
+                                    <tableViewCell contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" reuseIdentifier="ContactCell" rowHeight="250" id="Xsw-vy-Qv5" customClass="ContactCell" customModule="zulu" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="0.0" width="300" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="Xsw-vy-Qv5" id="181-Qg-Gpc">
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Full Name" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="dgf-qv-EL5">
-                                                    <rect key="frame" x="61" y="102" width="179" height="21"/>
-                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                                    <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                                    <rect key="frame" x="61" y="125" width="179" height="33"/>
+                                                    <fontDescription key="fontDescription" name="HelveticaNeue-Light" family="Helvetica Neue" pointSize="22"/>
+                                                    <color key="textColor" red="0.19607843137254902" green="0.19607843137254902" blue="0.19607843137254902" alpha="1" colorSpace="calibratedRGB"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
-                                                <imageView userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="default-profile" translatesAutoresizingMaskIntoConstraints="NO" id="sbk-Dw-lhS">
-                                                    <rect key="frame" x="123" y="30" width="55" height="55"/>
-                                                </imageView>
-                                                <button hidden="YES" opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="RcR-PD-7uj">
-                                                    <rect key="frame" x="54" y="58" width="30" height="30"/>
-                                                    <state key="normal" title="Call"/>
+                                                <button hidden="YES" opaque="NO" contentMode="scaleAspectFit" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="RcR-PD-7uj">
+                                                    <rect key="frame" x="61" y="176" width="40" height="40"/>
+                                                    <color key="backgroundColor" red="0.68235294117647061" green="0.22745098039215686" blue="0.15686274509803921" alpha="1" colorSpace="calibratedRGB"/>
+                                                    <inset key="imageEdgeInsets" minX="10" minY="10" maxX="10" maxY="10"/>
+                                                    <state key="normal" title="Call" image="call"/>
                                                     <connections>
                                                         <action selector="didPressButtonCall" destination="Xsw-vy-Qv5" eventType="touchUpInside" id="UdD-OZ-4Mt"/>
                                                     </connections>
                                                 </button>
-                                                <button hidden="YES" opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="GWq-Kg-7eu">
-                                                    <rect key="frame" x="37" y="113" width="62" height="30"/>
-                                                    <state key="normal" title="Message">
+                                                <button hidden="YES" opaque="NO" contentMode="scaleAspectFit" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="GWq-Kg-7eu">
+                                                    <rect key="frame" x="130" y="176" width="40" height="40"/>
+                                                    <color key="backgroundColor" red="0.68235294120000001" green="0.2274509804" blue="0.15686274510000001" alpha="1" colorSpace="calibratedRGB"/>
+                                                    <inset key="contentEdgeInsets" minX="10" minY="10" maxX="10" maxY="10"/>
+                                                    <state key="normal" title="Message" image="message">
                                                         <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                                     </state>
                                                     <connections>
                                                         <action selector="didPressButtonMessage" destination="Xsw-vy-Qv5" eventType="touchUpInside" id="sWj-kN-Qax"/>
                                                     </connections>
                                                 </button>
-                                                <button hidden="YES" opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="XtV-Of-JMM">
-                                                    <rect key="frame" x="191" y="61" width="38" height="30"/>
-                                                    <state key="normal" title="Email">
+                                                <button hidden="YES" opaque="NO" contentMode="scaleAspectFit" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="XtV-Of-JMM">
+                                                    <rect key="frame" x="200" y="176" width="40" height="40"/>
+                                                    <color key="backgroundColor" red="0.68235294120000001" green="0.2274509804" blue="0.15686274510000001" alpha="1" colorSpace="calibratedRGB"/>
+                                                    <inset key="contentEdgeInsets" minX="10" minY="10" maxX="10" maxY="10"/>
+                                                    <state key="normal" title="Email" image="email">
                                                         <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                                     </state>
                                                     <connections>
                                                         <action selector="didPressButtonEmail" destination="Xsw-vy-Qv5" eventType="touchUpInside" id="bma-CE-38q"/>
                                                     </connections>
                                                 </button>
+                                                <imageView userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="default-profile" translatesAutoresizingMaskIntoConstraints="NO" id="sbk-Dw-lhS">
+                                                    <rect key="frame" x="110" y="29" width="80" height="80"/>
+                                                </imageView>
                                             </subviews>
                                         </tableViewCellContentView>
                                         <userDefinedRuntimeAttributes>
@@ -116,6 +122,9 @@
         </scene>
     </scenes>
     <resources>
+        <image name="call" width="256" height="256"/>
         <image name="default-profile" width="570" height="570"/>
+        <image name="email" width="256" height="256"/>
+        <image name="message" width="256" height="256"/>
     </resources>
 </document>

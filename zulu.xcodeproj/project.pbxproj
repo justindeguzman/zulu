@@ -15,6 +15,7 @@
 		8B31272C1A1A46B30054FF44 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8B31272B1A1A46B30054FF44 /* Images.xcassets */; };
 		8B31272F1A1A46B30054FF44 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8B31272D1A1A46B30054FF44 /* LaunchScreen.xib */; };
 		8B31273B1A1A46B30054FF44 /* zuluTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B31273A1A1A46B30054FF44 /* zuluTests.swift */; };
+		8B5680CD1A36A52F00F2B5D8 /* Tag.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B5680CC1A36A52F00F2B5D8 /* Tag.swift */; };
 		8B924A0E1A350DA300CED3A4 /* Contact.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B924A0D1A350DA300CED3A4 /* Contact.swift */; };
 		8BA8C4F01A3576D00069F03E /* ContactCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8BA8C4EF1A3576D00069F03E /* ContactCell.swift */; };
 /* End PBXBuildFile section */
@@ -42,6 +43,7 @@
 		8B3127391A1A46B30054FF44 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		8B31273A1A1A46B30054FF44 /* zuluTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = zuluTests.swift; sourceTree = "<group>"; };
 		8B5404DA1A3422DE00779D8E /* zulu-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "zulu-Bridging-Header.h"; sourceTree = "<group>"; };
+		8B5680CC1A36A52F00F2B5D8 /* Tag.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Tag.swift; sourceTree = "<group>"; };
 		8B924A0D1A350DA300CED3A4 /* Contact.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Contact.swift; sourceTree = "<group>"; };
 		8BA8C4EF1A3576D00069F03E /* ContactCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ContactCell.swift; sourceTree = "<group>"; };
 		CCAF842B081740DD96A42173 /* Pods.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.xcconfig; path = Pods/Pods.xcconfig; sourceTree = "<group>"; };
@@ -139,6 +141,7 @@
 			isa = PBXGroup;
 			children = (
 				8B3127231A1A46B30054FF44 /* zulu.xcdatamodeld */,
+				8B5680CC1A36A52F00F2B5D8 /* Tag.swift */,
 				8B924A0D1A350DA300CED3A4 /* Contact.swift */,
 			);
 			name = "Core Data";
@@ -291,6 +294,7 @@
 				8BA8C4F01A3576D00069F03E /* ContactCell.swift in Sources */,
 				8B924A0E1A350DA300CED3A4 /* Contact.swift in Sources */,
 				8B3127271A1A46B30054FF44 /* ViewController.swift in Sources */,
+				8B5680CD1A36A52F00F2B5D8 /* Tag.swift in Sources */,
 				8B3127221A1A46B30054FF44 /* AppDelegate.swift in Sources */,
 				8B3127251A1A46B30054FF44 /* zulu.xcdatamodeld in Sources */,
 			);
