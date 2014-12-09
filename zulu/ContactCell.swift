@@ -19,16 +19,47 @@ class ContactCell: UITableViewCell {
   var email: NSString = ""
   
   @IBAction func didPressButtonCall() {
-    let url = NSURL(string: "telprompt://9172384239")!
-    UIApplication.sharedApplication().openURL(url)
+    if(phoneNumber != "") {
+      let url = NSURL(string: "tel://\(self.parsePhone())")!
+      UIApplication.sharedApplication().openURL(url)
+    }
   }
   
   @IBAction func didPressButtonMessage() {
-    let url = NSURL(string: "sms://9172384239")!
-    UIApplication.sharedApplication().openURL(url)
+    if(phoneNumber != "") {
+      let url = NSURL(string: "sms://\(self.parsePhone())")!
+      UIApplication.sharedApplication().openURL(url)
+    }
   }
   
   @IBAction func didPressButtonEmail() {
-    println("Email \(self.email)")
+    if(email != "") {
+      let url = NSURL(string: "mailto://\(email)")!
+      UIApplication.sharedApplication().openURL(url)
+    }
+  }
+  
+  func parsePhone() -> String {
+    var parsedPhoneNumber: String = (phoneNumber as String)
+    
+    parsedPhoneNumber = parsedPhoneNumber.stringByReplacingOccurrencesOfString(
+      String(Character(UnicodeScalar(160))), withString: "")
+    
+    parsedPhoneNumber = parsedPhoneNumber.stringByReplacingOccurrencesOfString(
+      " ", withString: "", options: NSStringCompareOptions.LiteralSearch,
+      range: nil)
+    
+    parsedPhoneNumber = parsedPhoneNumber.stringByReplacingOccurrencesOfString(
+      "(", withString: "", options: NSStringCompareOptions.LiteralSearch,
+      range: nil)
+    
+    parsedPhoneNumber = parsedPhoneNumber.stringByReplacingOccurrencesOfString(
+      ")", withString: "", options: NSStringCompareOptions.LiteralSearch,
+      range: nil)
+    
+    parsedPhoneNumber = parsedPhoneNumber.stringByReplacingOccurrencesOfString(
+      "-", withString: "", options: NSStringCompareOptions.LiteralSearch,
+      range: nil)
+    return parsedPhoneNumber
   }
 }
