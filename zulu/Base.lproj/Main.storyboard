@@ -93,6 +93,12 @@
                                     <outlet property="delegate" destination="vXZ-lx-hvc" id="2s7-I0-KLY"/>
                                 </connections>
                             </tableView>
+                            <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" misplaced="YES" text="Results" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="eox-8O-EvJ">
+                                <rect key="frame" x="317" y="87" width="57" height="21"/>
+                                <fontDescription key="fontDescription" name="HelveticaNeue-Italic" family="Helvetica Neue" pointSize="10"/>
+                                <color key="textColor" red="0.1960784314" green="0.1960784314" blue="0.1960784314" alpha="1" colorSpace="calibratedRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                             <searchBar alpha="0.0" contentMode="redraw" ambiguous="YES" misplaced="YES" searchBarStyle="minimal" translatesAutoresizingMaskIntoConstraints="NO" id="pC0-Hj-nNd">
                                 <rect key="frame" x="176" y="76" width="248" height="44"/>
                                 <textInputTraits key="textInputTraits"/>
@@ -100,24 +106,21 @@
                                     <outlet property="delegate" destination="vXZ-lx-hvc" id="Gkf-Uh-eRo"/>
                                 </connections>
                             </searchBar>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Results" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="eox-8O-EvJ">
-                                <rect key="frame" x="353" y="85" width="57" height="21"/>
-                                <fontDescription key="fontDescription" name="HelveticaNeue-Italic" family="Helvetica Neue" pointSize="10"/>
-                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
-                                <nil key="highlightedColor"/>
-                            </label>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstItem="ODT-qy-PkU" firstAttribute="centerY" secondItem="kh9-bI-dsS" secondAttribute="bottom" multiplier="1/3" id="NRl-Kz-5mT"/>
+                            <constraint firstItem="eox-8O-EvJ" firstAttribute="leading" secondItem="pC0-Hj-nNd" secondAttribute="trailing" constant="-100" id="QX3-aq-Smc"/>
                             <constraint firstAttribute="centerX" secondItem="pC0-Hj-nNd" secondAttribute="centerX" id="V45-u4-24q"/>
                             <constraint firstAttribute="centerX" secondItem="Dpg-1p-60h" secondAttribute="centerX" id="dnm-kt-Vmu"/>
+                            <constraint firstItem="eox-8O-EvJ" firstAttribute="centerY" secondItem="pC0-Hj-nNd" secondAttribute="centerY" constant="-0.5" id="ioL-H2-Oo3"/>
                             <constraint firstAttribute="centerX" secondItem="ODT-qy-PkU" secondAttribute="centerX" id="n3u-VQ-L9X"/>
                         </constraints>
                     </view>
                     <connections>
                         <outlet property="logo" destination="ODT-qy-PkU" id="eHp-Dr-d7I"/>
                         <outlet property="logoYConstraint" destination="NRl-Kz-5mT" id="ysD-7Z-TiL"/>
+                        <outlet property="resultsLabel" destination="eox-8O-EvJ" id="9fr-cz-PXz"/>
                         <outlet property="searchBar" destination="pC0-Hj-nNd" id="4Cd-SA-8Pw"/>
                         <outlet property="tableView" destination="Dpg-1p-60h" id="Bro-Ss-Ait"/>
                     </connections>

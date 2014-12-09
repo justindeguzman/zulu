@@ -39,6 +39,7 @@ UITableViewDataSource, UISearchBarDelegate {
   @IBOutlet weak var logo: UILabel!
   @IBOutlet weak var tableView: UITableView!
   @IBOutlet weak var searchBar: UISearchBar!
+  @IBOutlet weak var resultsLabel: UILabel!
   
   /**
    * Constraints.
@@ -312,6 +313,8 @@ UITableViewDataSource, UISearchBarDelegate {
   }
   
   func searchBar(searchBar: UISearchBar, textDidChange searchText: String) {
+    var showResultsLabel = false
+    
     let fetchRequest = NSFetchRequest(entityName: "Contact")
     
     let sortDescriptor = NSSortDescriptor(key: "lastName", ascending: true,
@@ -321,6 +324,7 @@ UITableViewDataSource, UISearchBarDelegate {
       fetchRequest.predicate = NSPredicate(
         format: "(firstName CONTAINS[c] %@) OR (lastName CONTAINS[c] %@)",
         argumentArray: [searchText, searchText])
+      showResultsLabel = true
     }
     
     fetchRequest.sortDescriptors = [sortDescriptor]
@@ -331,6 +335,13 @@ UITableViewDataSource, UISearchBarDelegate {
     }
     
     openedCells = [Bool](count: savedContacts.count, repeatedValue: false)
+    
+    if(showResultsLabel) {
+      resultsLabel.text = "\(savedContacts.count) Results"
+      resultsLabel.hidden = false
+    } else {
+      resultsLabel.hidden = true
+    }
     
     self.tableView.reloadData()
   }
