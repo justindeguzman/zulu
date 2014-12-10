@@ -28,7 +28,7 @@
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <inset key="separatorInset" minX="30" minY="0.0" maxX="30" maxY="0.0"/>
                                 <prototypes>
-                                    <tableViewCell contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" reuseIdentifier="ContactCell" rowHeight="250" id="Xsw-vy-Qv5" customClass="ContactCell" customModule="zulu" customModuleProvider="target">
+                                    <tableViewCell contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" reuseIdentifier="ContactCell" rowHeight="300" id="Xsw-vy-Qv5" customClass="ContactCell" customModule="zulu" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="0.0" width="300" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="Xsw-vy-Qv5" id="181-Qg-Gpc">
@@ -74,6 +74,21 @@
                                                 <imageView userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="default-profile" translatesAutoresizingMaskIntoConstraints="NO" id="sbk-Dw-lhS">
                                                     <rect key="frame" x="110" y="29" width="80" height="80"/>
                                                 </imageView>
+                                                <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="add tag" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="9sc-iV-YXM">
+                                                    <rect key="frame" x="102" y="241" width="97" height="30"/>
+                                                    <color key="backgroundColor" red="0.92156862745098034" green="0.92549019607843142" blue="0.93333333333333335" alpha="1" colorSpace="calibratedRGB"/>
+                                                    <fontDescription key="fontDescription" type="italicSystem" pointSize="14"/>
+                                                    <textInputTraits key="textInputTraits" returnKeyType="done"/>
+                                                    <userDefinedRuntimeAttributes>
+                                                        <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                                                            <integer key="value" value="5"/>
+                                                        </userDefinedRuntimeAttribute>
+                                                        <userDefinedRuntimeAttribute type="boolean" keyPath="layer.masksToBounds" value="YES"/>
+                                                    </userDefinedRuntimeAttributes>
+                                                    <connections>
+                                                        <outlet property="delegate" destination="Xsw-vy-Qv5" id="A89-kn-f9f"/>
+                                                    </connections>
+                                                </textField>
                                             </subviews>
                                         </tableViewCellContentView>
                                         <userDefinedRuntimeAttributes>
@@ -83,6 +98,7 @@
                                             <outlet property="buttonCall" destination="RcR-PD-7uj" id="7kk-RA-aCK"/>
                                             <outlet property="buttonEmail" destination="XtV-Of-JMM" id="Rb9-bl-vqx"/>
                                             <outlet property="buttonMessage" destination="GWq-Kg-7eu" id="0c4-hr-fwX"/>
+                                            <outlet property="inputAddTag" destination="9sc-iV-YXM" id="eN1-Zi-LHJ"/>
                                             <outlet property="name" destination="dgf-qv-EL5" id="cXc-LM-GUb"/>
                                             <outlet property="profilePicture" destination="sbk-Dw-lhS" id="rFW-r7-Jgb"/>
                                         </connections>
@@ -127,7 +143,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="x5A-6p-PRh" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="455" y="290"/>
+            <point key="canvasLocation" x="455" y="289"/>
         </scene>
     </scenes>
     <resources>

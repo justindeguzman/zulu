@@ -15,5 +15,5 @@ class Contact: NSManagedObject {
   @NSManaged var phone: String?
   @NSManaged var email: String?
   @NSManaged var photo: AnyObject?
-  @NSManaged var tags: NSManagedObject
+  @NSManaged var tags: NSSet?
 }

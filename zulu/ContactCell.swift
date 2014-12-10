@@ -8,12 +8,13 @@
 
 import UIKit
 
-class ContactCell: UITableViewCell {
+class ContactCell: UITableViewCell, UITextFieldDelegate {
   @IBOutlet weak var profilePicture: UIImageView!
   @IBOutlet weak var name: UILabel!
   @IBOutlet weak var buttonCall: UIButton!
   @IBOutlet weak var buttonMessage: UIButton!
   @IBOutlet weak var buttonEmail: UIButton!
+  @IBOutlet weak var inputAddTag: UITextField!
   
   var phoneNumber : NSString = ""
   var email: NSString = ""
@@ -62,4 +63,35 @@ class ContactCell: UITableViewCell {
       range: nil)
     return parsedPhoneNumber
   }
+  
+  /**
+   * UITextField Delegate Methods.
+   */
+  
+  func textFieldDidBeginEditing(textField: UITextField!) {
+    
+  }
+  
+  func parentTableView() -> UITableView? {
+    var currentView = self.superview
+    
+    while(currentView != nil) {
+      if((currentView?.isKindOfClass(UITableView)) != nil) {
+        return currentView as UITableView?
+      }
+      
+      currentView = currentView?.superview
+    }
+    
+    return nil
+  }
+  
+  func textFieldShouldReturn(textField: UITextField!) -> Bool {
+    textField.resignFirstResponder()
+    return true
+  }
+  
+//  func textFieldShouldEndEditing(textField: UITextField!) -> Bool {  //delegate method
+//    return false
+//  }
 }

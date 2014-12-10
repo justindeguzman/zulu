@@ -50,6 +50,14 @@ UITableViewDataSource, UISearchBarDelegate {
   override func viewDidLoad() {
     super.viewDidLoad()
 
+    // Register observers to know when the keyboard pops up
+    NSNotificationCenter.defaultCenter().addObserver(self, selector:
+      "keyboardWasShown:", name: UIKeyboardDidShowNotification, object: nil)
+    
+    NSNotificationCenter.defaultCenter().addObserver(self, selector:
+      "keyboardWillBeHidden:", name: UIKeyboardWillHideNotification,
+      object: nil)
+    
     // Close the keyboard when people click anywhere on the screen
     tableView.keyboardDismissMode = UIScrollViewKeyboardDismissMode.OnDrag
     
@@ -61,6 +69,41 @@ UITableViewDataSource, UISearchBarDelegate {
     NSNotificationCenter.defaultCenter().addObserver(
       self, selector:"fetchAddressBookData",
       name: UIApplicationWillEnterForegroundNotification, object: nil)
+  }
+  
+  func keyboardWasShown(notification: NSNotification) {
+    print("yolo")
+
+    
+    
+    //    UIInterfaceOrientation orientation = [[UIApplication sharedApplication] statusBarOrientation];
+    //    CGSize keyboardSize = [[[notif userInfo] objectForKey:UIKeyboardFrameBeginUserInfoKey] CGRectValue].size;
+    //    if (orientation == UIDeviceOrientationLandscapeLeft || orientation == UIDeviceOrientationLandscapeRight ) {
+    //      CGSize origKeySize = keyboardSize;
+    //      keyboardSize.height = origKeySize.width;
+    //      keyboardSize.width = origKeySize.height;
+    //    }
+    //    UIEdgeInsets contentInsets = UIEdgeInsetsMake(0, 0, keyboardSize.height, 0);
+    //    scroller.contentInset = contentInsets;
+    //    scroller.scrollIndicatorInsets = contentInsets;
+    //
+    //    // If active text field is hidden by keyboard, scroll it so it's visible
+    //    // Your application might not need or want this behavior.
+    //    CGRect rect = scroller.frame;
+    //    rect.size.height -= keyboardSize.height;
+    //    NSLog(@"Rect Size Height: %f", rect.size.height);
+    //
+    //    if (!CGRectContainsPoint(rect, activeField.frame.origin)) {
+    //      CGPoint point = CGPointMake(0, activeField.frame.origin.y - keyboardSize.height);
+    //      NSLog(@"Point Height: %f", point.y);
+    //      [scroller setContentOffset:point animated:YES];
+    //    }
+  }
+  
+  func keyboardWillBeHidden(notification: NSNotification) {
+    print("Keyboard will be hidden.")
+    self.tableView.contentInset = UIEdgeInsetsZero
+    self.tableView.scrollIndicatorInsets = UIEdgeInsetsZero
   }
   
   func searchBarSearchButtonClicked(searchBar: UISearchBar) {
@@ -132,7 +175,6 @@ UITableViewDataSource, UISearchBarDelegate {
       "Contact", inManagedObjectContext: self.managedObjectContext!
     )
     request.predicate = predicate
-    //request.predicate = NSPredicate(format: predicateString)
     request.fetchLimit = 1
 
     var error: NSError?
@@ -150,6 +192,15 @@ UITableViewDataSource, UISearchBarDelegate {
       
       if(!isEmptyString(contact.firstName)) {
         row.firstName = contact.firstName
+        
+        if(contact.firstName == "Abhi") {
+          let tag = NSEntityDescription.insertNewObjectForEntityForName(
+            "Tag", inManagedObjectContext: self.managedObjectContext!
+            ) as Tag
+          tag.title = "engineer"
+          
+          row.mutableSetValueForKey("tags").addObject(tag)
+        }
       }
       
       if(!isEmptyString(contact.lastName)) {
@@ -267,7 +318,7 @@ UITableViewDataSource, UISearchBarDelegate {
         dispatch_after(
           dispatch_time(
             DISPATCH_TIME_NOW,
-            Int64(0.2 * Double(NSEC_PER_SEC))
+            Int64(0.25 * Double(NSEC_PER_SEC))
           ),
           dispatch_get_main_queue(), {
             cell.buttonCall.hidden = true
@@ -300,7 +351,7 @@ UITableViewDataSource, UISearchBarDelegate {
   func tableView(tableView: UITableView, heightForRowAtIndexPath
     indexPath: NSIndexPath) -> CGFloat {
     if(self.savedContacts.count > 0) {
-      return openedCells[indexPath.row] ? 250.0 : 180.0
+      return openedCells[indexPath.row] ? 300.0 : 180.0
     }
     
     return 0.0
@@ -321,9 +372,18 @@ UITableViewDataSource, UISearchBarDelegate {
       selector: "caseInsensitiveCompare:")
     
     if(countElements(searchText) > 0) {
-      fetchRequest.predicate = NSPredicate(
-        format: "(firstName CONTAINS[c] %@) OR (lastName CONTAINS[c] %@)",
-        argumentArray: [searchText, searchText])
+      let firstNamePredicate = NSPredicate(format: "firstName CONTAINS[c] %@", argumentArray: [searchText])
+      let lastNamePredicate = NSPredicate(format: "lastName CONTAINS[c] %@", argumentArray: [searchText])
+      
+      let tagPredicateFormat = "ANY tags.title CONTAINS[c] '\(searchText)'"
+      
+      let tagPredicate = NSPredicate(format: tagPredicateFormat,
+        argumentArray: [searchText])
+      let compoundPredicate = NSCompoundPredicate(type: NSCompoundPredicateType.OrPredicateType, subpredicates:
+        [firstNamePredicate, lastNamePredicate, tagPredicate])
+      
+      fetchRequest.predicate = compoundPredicate
+      
       showResultsLabel = true
     }
     
@@ -342,6 +402,8 @@ UITableViewDataSource, UISearchBarDelegate {
     } else {
       resultsLabel.hidden = true
     }
+    
+    tableView.hidden = savedContacts.count == 0
     
     self.tableView.reloadData()
   }
