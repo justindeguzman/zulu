@@ -72,10 +72,6 @@ UITableViewDataSource, UISearchBarDelegate {
   }
   
   func keyboardWasShown(notification: NSNotification) {
-    print("yolo")
-
-    
-    
     //    UIInterfaceOrientation orientation = [[UIApplication sharedApplication] statusBarOrientation];
     //    CGSize keyboardSize = [[[notif userInfo] objectForKey:UIKeyboardFrameBeginUserInfoKey] CGRectValue].size;
     //    if (orientation == UIDeviceOrientationLandscapeLeft || orientation == UIDeviceOrientationLandscapeRight ) {
@@ -101,7 +97,6 @@ UITableViewDataSource, UISearchBarDelegate {
   }
   
   func keyboardWillBeHidden(notification: NSNotification) {
-    print("Keyboard will be hidden.")
     self.tableView.contentInset = UIEdgeInsetsZero
     self.tableView.scrollIndicatorInsets = UIEdgeInsetsZero
   }
@@ -136,16 +131,6 @@ UITableViewDataSource, UISearchBarDelegate {
     self.tableView.reloadData()
   }
   
- /**
-  * Checks if an a string is empty.
-  *
-  * @param contact The contact to be saved.
-  */
-  
-  func isEmptyString(str: String?) -> Bool {
-    return str == nil || str == ""
-  }
-  
   /**
    * Fetches the contact data from the address book.
    *
@@ -155,8 +140,8 @@ UITableViewDataSource, UISearchBarDelegate {
   func saveContact(contact : APContact) {
     var predicate : NSPredicate = NSPredicate()
     
-    let containsFirstName = !isEmptyString(contact.firstName)
-    let containsLastName = !isEmptyString(contact.lastName)
+    let containsFirstName = !Util.isEmptyString(contact.firstName)
+    let containsLastName = !Util.isEmptyString(contact.lastName)
     
     if(containsFirstName && containsLastName) {
       predicate = NSPredicate(format: "firstName = %@ AND lastName = %@",
@@ -190,20 +175,11 @@ UITableViewDataSource, UISearchBarDelegate {
         "Contact", inManagedObjectContext: self.managedObjectContext!
         ) as Contact
       
-      if(!isEmptyString(contact.firstName)) {
+      if(!Util.isEmptyString(contact.firstName)) {
         row.firstName = contact.firstName
-        
-        if(contact.firstName == "Abhi") {
-          let tag = NSEntityDescription.insertNewObjectForEntityForName(
-            "Tag", inManagedObjectContext: self.managedObjectContext!
-            ) as Tag
-          tag.title = "engineer"
-          
-          row.mutableSetValueForKey("tags").addObject(tag)
-        }
       }
       
-      if(!isEmptyString(contact.lastName)) {
+      if(!Util.isEmptyString(contact.lastName)) {
         row.lastName = contact.lastName
       }
       
@@ -263,11 +239,11 @@ UITableViewDataSource, UISearchBarDelegate {
     })
   }
   
-  func showHiddenCellElements(cell: ContactCell, show: Bool) {
-    cell.buttonCall.hidden = !show
-    cell.buttonMessage.hidden = !show
-    cell.buttonEmail.hidden = !show
-  }
+//  func showHiddenCellElements(cell: ContactCell, show: Bool) {
+//    cell.buttonCall.hidden = !show
+//    cell.buttonMessage.hidden = !show
+//    cell.buttonEmail.hidden = !show
+//  }
   
   /**
    * Animates the logo to the top of the view.
@@ -326,7 +302,8 @@ UITableViewDataSource, UISearchBarDelegate {
             cell.buttonEmail.hidden = true
         })
       } else {
-        self.showHiddenCellElements(cell, show: true)
+        cell.showHiddenCellElements(true)
+        
         if(cell.phoneNumber == "") {
           cell.buttonCall.alpha = 0.5
           cell.buttonMessage.alpha = 0.5
@@ -356,13 +333,7 @@ UITableViewDataSource, UISearchBarDelegate {
     
     return 0.0
   }
-  
-  func makeCircle(square: UIView) {
-    square.layer.cornerRadius = square.frame.size.height / 2
-    square.layer.masksToBounds = true
-    square.layer.borderWidth = 0
-  }
-  
+    
   func searchBar(searchBar: UISearchBar, textDidChange searchText: String) {
     var showResultsLabel = false
     
@@ -423,17 +394,19 @@ UITableViewDataSource, UISearchBarDelegate {
         as ContactCell
       
       // Make profile picture a circle
-      self.makeCircle(cell.profilePicture)
+      Util.makeCircle(cell.profilePicture)
       
       // Make action buttons circles
-      self.makeCircle(cell.buttonCall)
-      self.makeCircle(cell.buttonMessage)
-      self.makeCircle(cell.buttonEmail)
+      Util.makeCircle(cell.buttonCall)
+      Util.makeCircle(cell.buttonMessage)
+      Util.makeCircle(cell.buttonEmail)
       
       if(savedContacts.count > 0) {
         var name = ""
         
         let contact = savedContacts[indexPath.row]
+        
+        cell.contact = contact
         
         if(contact.firstName != nil) {
           name += contact.firstName!
@@ -467,7 +440,7 @@ UITableViewDataSource, UISearchBarDelegate {
           cell.profilePicture.image = UIImage(named: "default-profile")
         }
         
-        showHiddenCellElements(cell, show: openedCells[indexPath.row])
+        cell.showHiddenCellElements(openedCells[indexPath.row])
       }
       
       return cell

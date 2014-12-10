@@ -18,6 +18,7 @@
 		8BA8C4F01A3576D00069F03E /* ContactCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8BA8C4EF1A3576D00069F03E /* ContactCell.swift */; };
 		8BAC682D1A38157C00BF95CB /* Contact.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8BAC682C1A38157C00BF95CB /* Contact.swift */; };
 		8BAC682F1A3815BF00BF95CB /* Tag.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8BAC682E1A3815BF00BF95CB /* Tag.swift */; };
+		8BAC68311A38E29D00BF95CB /* Util.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8BAC68301A38E29D00BF95CB /* Util.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -46,6 +47,7 @@
 		8BA8C4EF1A3576D00069F03E /* ContactCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ContactCell.swift; sourceTree = "<group>"; };
 		8BAC682C1A38157C00BF95CB /* Contact.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Contact.swift; sourceTree = "<group>"; };
 		8BAC682E1A3815BF00BF95CB /* Tag.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Tag.swift; sourceTree = "<group>"; };
+		8BAC68301A38E29D00BF95CB /* Util.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Util.swift; sourceTree = "<group>"; };
 		CCAF842B081740DD96A42173 /* Pods.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.xcconfig; path = Pods/Pods.xcconfig; sourceTree = "<group>"; };
 		EADB4E39ED614551A98EFDC9 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -143,6 +145,7 @@
 				8BAC682E1A3815BF00BF95CB /* Tag.swift */,
 				8B3127231A1A46B30054FF44 /* zulu.xcdatamodeld */,
 				8BAC682C1A38157C00BF95CB /* Contact.swift */,
+				8BAC68301A38E29D00BF95CB /* Util.swift */,
 			);
 			name = "Core Data";
 			sourceTree = "<group>";
@@ -295,6 +298,7 @@
 				8B3127271A1A46B30054FF44 /* ViewController.swift in Sources */,
 				8BAC682F1A3815BF00BF95CB /* Tag.swift in Sources */,
 				8B3127221A1A46B30054FF44 /* AppDelegate.swift in Sources */,
+				8BAC68311A38E29D00BF95CB /* Util.swift in Sources */,
 				8B3127251A1A46B30054FF44 /* zulu.xcdatamodeld in Sources */,
 				8BAC682D1A38157C00BF95CB /* Contact.swift in Sources */,
 			);

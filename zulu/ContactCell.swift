@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import CoreData
 
 class ContactCell: UITableViewCell, UITextFieldDelegate {
   @IBOutlet weak var profilePicture: UIImageView!
@@ -16,6 +17,7 @@ class ContactCell: UITableViewCell, UITextFieldDelegate {
   @IBOutlet weak var buttonEmail: UIButton!
   @IBOutlet weak var inputAddTag: UITextField!
   
+  var contact: Contact?
   var phoneNumber : NSString = ""
   var email: NSString = ""
   
@@ -87,8 +89,16 @@ class ContactCell: UITableViewCell, UITextFieldDelegate {
   }
   
   func textFieldShouldReturn(textField: UITextField!) -> Bool {
+    contact?.addTag(textField.text)
+    print("added tag")
     textField.resignFirstResponder()
     return true
+  }
+  
+  func showHiddenCellElements(show: Bool) {
+    self.buttonCall.hidden = !show
+    self.buttonMessage.hidden = !show
+    self.buttonEmail.hidden = !show
   }
   
 //  func textFieldShouldEndEditing(textField: UITextField!) -> Bool {  //delegate method

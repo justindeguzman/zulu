@@ -15,5 +15,14 @@ class Contact: NSManagedObject {
   @NSManaged var phone: String?
   @NSManaged var email: String?
   @NSManaged var photo: AnyObject?
-  @NSManaged var tags: NSSet?
+  
+  func addTag(title: String) {
+    if(!Tag.exists(title, managedObjectContext: self.managedObjectContext)) {
+      let tag = NSEntityDescription.insertNewObjectForEntityForName(
+        "Tag", inManagedObjectContext: self.managedObjectContext!
+        ) as Tag
+      
+      tag.title = title
+    }
+  }
 }
