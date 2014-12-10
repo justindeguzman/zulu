@@ -9,6 +9,7 @@
 import Foundation
 
 class Util {
+  
  /**
   * Checks if an a string is empty.
   *

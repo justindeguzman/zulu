@@ -131,81 +131,6 @@ UITableViewDataSource, UISearchBarDelegate {
     self.tableView.reloadData()
   }
   
-  /**
-   * Fetches the contact data from the address book.
-   *
-   * @param contact The contact to be saved.
-   */
-
-  func saveContact(contact : APContact) {
-    var predicate : NSPredicate = NSPredicate()
-    
-    let containsFirstName = !Util.isEmptyString(contact.firstName)
-    let containsLastName = !Util.isEmptyString(contact.lastName)
-    
-    if(containsFirstName && containsLastName) {
-      predicate = NSPredicate(format: "firstName = %@ AND lastName = %@",
-        argumentArray: [contact.firstName, contact.lastName])
-    } else if(containsFirstName && !containsLastName) {
-      NSPredicate(format: "firstName = %@", argumentArray: [contact.firstName])
-    } else if(!containsFirstName && containsLastName) {
-      NSPredicate(format: "lastName = %@", argumentArray: [contact.lastName])
-    } else {
-      return
-    }
-    
-    // Check if the contact already exists
-    let request = NSFetchRequest()
-    request.entity =  NSEntityDescription.entityForName(
-      "Contact", inManagedObjectContext: self.managedObjectContext!
-    )
-    request.predicate = predicate
-    request.fetchLimit = 1
-
-    var error: NSError?
-    
-    var containsContact = self.managedObjectContext!.countForFetchRequest(
-      request, error: &error
-    )
-    
-    if(containsContact == 0) {
-      didAddNewContact = true
-      
-      let row = NSEntityDescription.insertNewObjectForEntityForName(
-        "Contact", inManagedObjectContext: self.managedObjectContext!
-        ) as Contact
-      
-      if(!Util.isEmptyString(contact.firstName)) {
-        row.firstName = contact.firstName
-        
-//        if(contact.firstName == "Abhi") {
-//          let tag = NSEntityDescription.insertNewObjectForEntityForName(
-//          "Tag", inManagedObjectContext: self.managedObjectContext!
-//          ) as Tag
-//          tag.title = "engineer"
-//          
-//          row.mutableSetValueForKey("tags").addObject(tag)
-//        }
-      }
-      
-      if(!Util.isEmptyString(contact.lastName)) {
-        row.lastName = contact.lastName
-      }
-      
-      if(contact.phones != nil && contact.phones.count > 0) {
-        row.phone = (contact.phones[0] as String)
-      }
-      
-      if(contact.emails != nil && contact.emails.count > 0) {
-        row.email = (contact.emails[0] as String)
-      }
-      
-      if(contact.photo != nil) {
-        row.photo = contact.photo
-      }
-    }
-  }
-  
  /**
   * Fetches the contact data from the address book.
   */
@@ -226,7 +151,10 @@ UITableViewDataSource, UISearchBarDelegate {
         self.moveLogoUp()
         
         for contact in contacts {
-          self.saveContact(contact as APContact)
+          if(Contact.create(contact as APContact, managedObjectContext:
+            self.managedObjectContext)) {
+              self.didAddNewContact = true
+          }
         }
         
         self.loadTableData()
@@ -247,12 +175,6 @@ UITableViewDataSource, UISearchBarDelegate {
       }
     })
   }
-  
-//  func showHiddenCellElements(cell: ContactCell, show: Bool) {
-//    cell.buttonCall.hidden = !show
-//    cell.buttonMessage.hidden = !show
-//    cell.buttonEmail.hidden = !show
-//  }
   
   /**
    * Animates the logo to the top of the view.

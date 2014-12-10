@@ -25,7 +25,7 @@ class Tag: NSManagedObject {
       return tag
   }
   
-  class func createTagFetchRequest(title: String, managedObjectContext:
+  class func fetchRequest(title: String, managedObjectContext:
     NSManagedObjectContext?) -> NSFetchRequest {
       let request = NSFetchRequest()
       request.entity =  NSEntityDescription.entityForName(
@@ -39,7 +39,8 @@ class Tag: NSManagedObject {
   
   class func retrieve(title: String, managedObjectContext:
     NSManagedObjectContext?) -> Tag? {
-    let request = Tag.createTagFetchRequest(title, managedObjectContext: managedObjectContext)
+    let request = Tag.fetchRequest(title, managedObjectContext:
+      managedObjectContext)
     
     if let fetchResults = managedObjectContext!.executeFetchRequest(
       request, error: nil) as? [Tag] {
@@ -53,7 +54,8 @@ class Tag: NSManagedObject {
   
   class func exists(title: String, managedObjectContext:
     NSManagedObjectContext?) -> Bool {
-    let request = Tag.createTagFetchRequest(title, managedObjectContext: managedObjectContext)
+    let request = Tag.fetchRequest(title, managedObjectContext:
+      managedObjectContext)
     
     var containsTag = managedObjectContext!.countForFetchRequest(
       request, error: nil

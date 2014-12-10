@@ -43,7 +43,7 @@
 		8B3127341A1A46B30054FF44 /* zuluTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = zuluTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		8B3127391A1A46B30054FF44 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		8B31273A1A1A46B30054FF44 /* zuluTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = zuluTests.swift; sourceTree = "<group>"; };
-		8B5404DA1A3422DE00779D8E /* zulu-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "zulu-Bridging-Header.h"; sourceTree = "<group>"; };
+		8B5404DA1A3422DE00779D8E /* zulu-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "zulu-Bridging-Header.h"; sourceTree = SOURCE_ROOT; };
 		8BA8C4EF1A3576D00069F03E /* ContactCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ContactCell.swift; sourceTree = "<group>"; };
 		8BAC682C1A38157C00BF95CB /* Contact.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Contact.swift; sourceTree = "<group>"; };
 		8BAC682E1A3815BF00BF95CB /* Tag.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Tag.swift; sourceTree = "<group>"; };
@@ -87,7 +87,6 @@
 				8B31271D1A1A46B30054FF44 /* Products */,
 				CCAF842B081740DD96A42173 /* Pods.xcconfig */,
 				3AB3F9DBA630466F9EE21A4E /* Frameworks */,
-				8B5404DA1A3422DE00779D8E /* zulu-Bridging-Header.h */,
 			);
 			sourceTree = "<group>";
 		};
@@ -106,10 +105,12 @@
 				8B3127211A1A46B30054FF44 /* AppDelegate.swift */,
 				8B3127261A1A46B30054FF44 /* ViewController.swift */,
 				8BA8C4EF1A3576D00069F03E /* ContactCell.swift */,
+				8BAC68301A38E29D00BF95CB /* Util.swift */,
+				8BAC682E1A3815BF00BF95CB /* Tag.swift */,
+				8BAC682C1A38157C00BF95CB /* Contact.swift */,
 				8BA8C4EE1A356BA30069F03E /* Storyboards */,
-				8BA8C4ED1A356B950069F03E /* Core Data */,
-				8B31272B1A1A46B30054FF44 /* Images.xcassets */,
 				8B31271F1A1A46B30054FF44 /* Supporting Files */,
+				8B31272B1A1A46B30054FF44 /* Images.xcassets */,
 			);
 			path = zulu;
 			sourceTree = "<group>";
@@ -117,6 +118,8 @@
 		8B31271F1A1A46B30054FF44 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				8B5404DA1A3422DE00779D8E /* zulu-Bridging-Header.h */,
+				8B3127231A1A46B30054FF44 /* zulu.xcdatamodeld */,
 				8B3127201A1A46B30054FF44 /* Info.plist */,
 			);
 			name = "Supporting Files";
@@ -137,17 +140,6 @@
 				8B3127391A1A46B30054FF44 /* Info.plist */,
 			);
 			name = "Supporting Files";
-			sourceTree = "<group>";
-		};
-		8BA8C4ED1A356B950069F03E /* Core Data */ = {
-			isa = PBXGroup;
-			children = (
-				8BAC682E1A3815BF00BF95CB /* Tag.swift */,
-				8B3127231A1A46B30054FF44 /* zulu.xcdatamodeld */,
-				8BAC682C1A38157C00BF95CB /* Contact.swift */,
-				8BAC68301A38E29D00BF95CB /* Util.swift */,
-			);
-			name = "Core Data";
 			sourceTree = "<group>";
 		};
 		8BA8C4EE1A356BA30069F03E /* Storyboards */ = {
