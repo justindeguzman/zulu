@@ -177,6 +177,15 @@ UITableViewDataSource, UISearchBarDelegate {
       
       if(!Util.isEmptyString(contact.firstName)) {
         row.firstName = contact.firstName
+        
+//        if(contact.firstName == "Abhi") {
+//          let tag = NSEntityDescription.insertNewObjectForEntityForName(
+//          "Tag", inManagedObjectContext: self.managedObjectContext!
+//          ) as Tag
+//          tag.title = "engineer"
+//          
+//          row.mutableSetValueForKey("tags").addObject(tag)
+//        }
       }
       
       if(!Util.isEmptyString(contact.lastName)) {

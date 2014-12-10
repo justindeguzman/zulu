@@ -14,23 +14,51 @@ class Tag: NSManagedObject {
   @NSManaged var title: String
   @NSManaged var contacts: NSSet
 
-  class func exists(title: String, managedObjectContext: NSManagedObjectContext?) -> Bool {
-    let request = NSFetchRequest()
-    request.entity =  NSEntityDescription.entityForName(
-      "Tag", inManagedObjectContext: managedObjectContext!
-    )
-    request.predicate = NSPredicate(format: "title = %@",
-      argumentArray: [title])
-    request.fetchLimit = 1
+  class func create(title: String, managedObjectContext:
+    NSManagedObjectContext?) -> Tag {
+      let tag = NSEntityDescription.insertNewObjectForEntityForName(
+        "Tag", inManagedObjectContext: managedObjectContext!
+      ) as Tag
+      
+      tag.title = title
+      
+      return tag
+  }
+  
+  class func createTagFetchRequest(title: String, managedObjectContext:
+    NSManagedObjectContext?) -> NSFetchRequest {
+      let request = NSFetchRequest()
+      request.entity =  NSEntityDescription.entityForName(
+        "Tag", inManagedObjectContext: managedObjectContext!
+      )
+      request.predicate = NSPredicate(format: "title = %@",
+        argumentArray: [title])
+      request.fetchLimit = 1
+      return request
+  }
+  
+  class func retrieve(title: String, managedObjectContext:
+    NSManagedObjectContext?) -> Tag? {
+    let request = Tag.createTagFetchRequest(title, managedObjectContext: managedObjectContext)
+    
+    if let fetchResults = managedObjectContext!.executeFetchRequest(
+      request, error: nil) as? [Tag] {
+        if(fetchResults.count > 0) {
+          return fetchResults[0] as Tag
+        }
+    }
+    
+    return nil
+  }
+  
+  class func exists(title: String, managedObjectContext:
+    NSManagedObjectContext?) -> Bool {
+    let request = Tag.createTagFetchRequest(title, managedObjectContext: managedObjectContext)
     
     var containsTag = managedObjectContext!.countForFetchRequest(
       request, error: nil
     )
     
-//    if(containsTag == 0) {
-//      //self.mutableSetValueForKey("tags").addObject(tag)
-//    }
-    
-    return containsTag == 0
+    return containsTag == 1
   }
 }

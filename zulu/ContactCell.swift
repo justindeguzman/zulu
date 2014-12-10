@@ -90,7 +90,6 @@ class ContactCell: UITableViewCell, UITextFieldDelegate {
   
   func textFieldShouldReturn(textField: UITextField!) -> Bool {
     contact?.addTag(textField.text)
-    print("added tag")
     textField.resignFirstResponder()
     return true
   }
