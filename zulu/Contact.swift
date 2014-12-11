@@ -10,19 +10,62 @@ import Foundation
 import CoreData
 
 class Contact: NSManagedObject {
+  
+  // MARK: Core Data Attributes
+  
   @NSManaged var firstName: String?
   @NSManaged var lastName: String?
   @NSManaged var phone: String?
   @NSManaged var email: String?
   @NSManaged var photo: AnyObject?
+  
+  // MARK: Core Data Relationships
+  
   @NSManaged var tags: NSSet?
+
+  // MARK: Instance Methods
+  
+ /**
+  * Associates a tag with a given user.
+  *
+  * @param title The title of the tag
+  */
+  
+  func addTag(title: String) {
+    var tag: Tag?
+    
+    // Create tag if it does not already exist
+    if(!Tag.exists(title, managedObjectContext: self.managedObjectContext)) {
+      tag = Tag.create(title, managedObjectContext: self.managedObjectContext)
+    } else {
+      tag = Tag.retrieve(title, managedObjectContext: self.managedObjectContext)
+    }
+    
+    // Insert into contact tags
+    self.mutableSetValueForKey("tags").addObject(tag!)
+  }
+  
+  // MARK: Class Methods
+  
+  /**
+   * Inserts a contact object into core data and returns true if a contact was
+   * successfully created.
+   * 
+   * @param contact The contact object to be inserted into Core Data.
+   * @param managedObjectContext The app's managed object context for core data.
+   * @return true if the object was successfully created
+   */
   
   class func create(contact: APContact,
     managedObjectContext: NSManagedObjectContext?) -> Bool {
-    if(!Contact.exists(contact, managedObjectContext: managedObjectContext)) {
+    let contactAlreadyCreated =
+      Contact.exists(contact, managedObjectContext: managedObjectContext)
+    
+    if(!contactAlreadyCreated) {
+      // Insert a new row into the database
       let row = NSEntityDescription.insertNewObjectForEntityForName(
         "Contact", inManagedObjectContext: managedObjectContext!
-        ) as Contact
+      ) as Contact
       
       if(!Util.isEmptyString(contact.firstName)) {
         row.firstName = contact.firstName
@@ -33,7 +76,7 @@ class Contact: NSManagedObject {
       }
       
       if(contact.phones != nil && contact.phones.count > 0) {
-        row.phone = (contact.phones[0] as String)
+        row.phone = Util.parsePhoneNumber((contact.phones[0] as String))
       }
       
       if(contact.emails != nil && contact.emails.count > 0) {
@@ -50,6 +93,14 @@ class Contact: NSManagedObject {
     return false
   }
   
+ /**
+  * Creates a fetch request given a specific predicate.
+  *
+  * @param predicate The predicate, or search filter, of the fetch request
+  * @param managedObjectContext The app's managed object context for core data.
+  * @return the fetch request based on a given predicate
+  */
+  
   class func fetchRequest(predicate: NSPredicate,
     managedObjectContext: NSManagedObjectContext?) -> NSFetchRequest {
       let request = NSFetchRequest()
@@ -60,6 +111,14 @@ class Contact: NSManagedObject {
       request.fetchLimit = 1
       return request
   }
+  
+ /**
+  * Returns whether or not a specific contact already exists.
+  *
+  * @param predicate The predicate, or search filter, of the fetch request
+  * @param managedObjectContext The app's managed object context for core data.
+  * @return the fetch request based on a given predicate
+  */
   
   class func exists(contact: APContact, managedObjectContext:
     NSManagedObjectContext?) -> Bool {
@@ -88,19 +147,5 @@ class Contact: NSManagedObject {
       )
       
       return containsContact == 1
-  }
-  
-  func addTag(title: String) {
-    var tag: Tag?
-    
-    // Create tag if it does not already exist
-    if(!Tag.exists(title, managedObjectContext: self.managedObjectContext)) {
-      tag = Tag.create(title, managedObjectContext: self.managedObjectContext)
-    } else {
-      tag = Tag.retrieve(title, managedObjectContext: self.managedObjectContext)
-    }
-    
-    // Insert into contact tags
-    self.mutableSetValueForKey("tags").addObject(tag!)
   }
 }

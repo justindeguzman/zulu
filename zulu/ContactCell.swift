@@ -10,6 +10,9 @@ import UIKit
 import CoreData
 
 class ContactCell: UITableViewCell, UITextFieldDelegate {
+  
+  // MARK: IBOutlets
+  
   @IBOutlet weak var profilePicture: UIImageView!
   @IBOutlet weak var name: UILabel!
   @IBOutlet weak var buttonCall: UIButton!
@@ -18,23 +21,39 @@ class ContactCell: UITableViewCell, UITextFieldDelegate {
   @IBOutlet weak var inputAddTag: UITextField!
   @IBOutlet weak var tagTextLabel: UILabel!
   
+  // MARK: Instance Variables
+  
   var contact: Contact?
   var phoneNumber : NSString = ""
   var email: NSString = ""
   
+  // MARK: Event Handlers
+  
+  /**
+   * Event handler for pressing the call button that initiates a call.
+   */
+  
   @IBAction func didPressButtonCall() {
     if(phoneNumber != "") {
-      let url = NSURL(string: "tel://\(self.parsePhone())")!
+      let url = NSURL(string: "tel://\(self.phoneNumber)")!
       UIApplication.sharedApplication().openURL(url)
     }
   }
   
+  /**
+   * Event handler for pressing the call button that initiates an SMS message.
+   */
+  
   @IBAction func didPressButtonMessage() {
     if(phoneNumber != "") {
-      let url = NSURL(string: "sms://\(self.parsePhone())")!
+      let url = NSURL(string: "sms://\(self.phoneNumber)")!
       UIApplication.sharedApplication().openURL(url)
     }
   }
+  
+  /**
+   * Event handler for pressing the call button that initiates an email.
+   */
   
   @IBAction func didPressButtonEmail() {
     if(email != "") {
@@ -43,59 +62,26 @@ class ContactCell: UITableViewCell, UITextFieldDelegate {
     }
   }
   
-  func parsePhone() -> String {
-    var parsedPhoneNumber: String = (phoneNumber as String)
-    
-    parsedPhoneNumber = parsedPhoneNumber.stringByReplacingOccurrencesOfString(
-      String(Character(UnicodeScalar(160))), withString: "")
-    
-    parsedPhoneNumber = parsedPhoneNumber.stringByReplacingOccurrencesOfString(
-      " ", withString: "", options: NSStringCompareOptions.LiteralSearch,
-      range: nil)
-    
-    parsedPhoneNumber = parsedPhoneNumber.stringByReplacingOccurrencesOfString(
-      "(", withString: "", options: NSStringCompareOptions.LiteralSearch,
-      range: nil)
-    
-    parsedPhoneNumber = parsedPhoneNumber.stringByReplacingOccurrencesOfString(
-      ")", withString: "", options: NSStringCompareOptions.LiteralSearch,
-      range: nil)
-    
-    parsedPhoneNumber = parsedPhoneNumber.stringByReplacingOccurrencesOfString(
-      "-", withString: "", options: NSStringCompareOptions.LiteralSearch,
-      range: nil)
-    return parsedPhoneNumber
-  }
+  // MARK: UITextField Delegate Methods
   
   /**
-   * UITextField Delegate Methods.
+   * Adds a tag to core data when the user presses "Done" after adding a tag.
    */
   
-  func textFieldDidBeginEditing(textField: UITextField!) {
+  func textFieldShouldReturn(textField: UITextField!) -> Bool {
+    contact?.addTag(textField.text)
+    updateTagTextView()
     
+    textField.text = ""
+    textField.resignFirstResponder()
+    return true
   }
   
-  func parentTableView() -> UITableView? {
-    var currentView = self.superview
-    
-    while(currentView != nil) {
-      if((currentView?.isKindOfClass(UITableView)) != nil) {
-        return currentView as UITableView?
-      }
-      
-      currentView = currentView?.superview
-    }
-    
-    return nil
-  }
+  // MARK: Instance Methods
   
-  func heightForTextView(text: String, font:UIFont, width:CGFloat) -> CGFloat {
-    let label: UITextView = UITextView(frame: CGRectMake(0, 0, width, CGFloat.max))
-    label.font = font
-    label.text = text
-    label.sizeToFit()
-    return label.frame.height + 50
-  }
+  /**
+   * Updates the table cell with the correct tags.
+   */
   
   func updateTagTextView() {
     var paragraphStyle = NSMutableParagraphStyle()
@@ -109,31 +95,15 @@ class ContactCell: UITableViewCell, UITextFieldDelegate {
       let currentTag = tag as Tag
       str += "#\(currentTag.title) "
     }
+    
     var attrString = NSMutableAttributedString(string: str)
     
-    attrString.addAttribute(NSFontAttributeName, value: UIFont(name: "HelveticaNeue-Light", size: 18.0)!, range: NSMakeRange(0, attrString.length))
+    attrString.addAttribute(NSFontAttributeName, value: UIFont(name:
+      "HelveticaNeue-Light", size: 18.0)!, range: NSMakeRange(0,
+        attrString.length))
     
     attrString.addAttribute(NSParagraphStyleAttributeName, value:paragraphStyle, range:NSMakeRange(0, attrString.length))
     
     self.tagTextLabel.attributedText = attrString
   }
-  
-  func textFieldShouldReturn(textField: UITextField!) -> Bool {
-    contact?.addTag(textField.text)
-    updateTagTextView()
-
-    textField.text = ""
-    textField.resignFirstResponder()
-    return true
-  }
-  
-  func showHiddenCellElements(show: Bool) {
-    self.buttonCall.hidden = !show
-    self.buttonMessage.hidden = !show
-    self.buttonEmail.hidden = !show
-  }
-  
-//  func textFieldShouldEndEditing(textField: UITextField!) -> Bool {  //delegate method
-//    return false
-//  }
 }

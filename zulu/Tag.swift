@@ -11,9 +11,21 @@ import CoreData
 
 class Tag: NSManagedObject {
 
+  // MARK: Core Data Attributes
+  
   @NSManaged var title: String
   @NSManaged var contacts: NSSet
 
+  // MARK: Class Methods
+  
+ /**
+  * Inserts a tag object into core data and returns it.
+  *
+  * @param title The title of the tag.
+  * @param managedObjectContext The app's managed object context for core data.
+  * @return the instance of the tag
+  */
+  
   class func create(title: String, managedObjectContext:
     NSManagedObjectContext?) -> Tag {
       let tag = NSEntityDescription.insertNewObjectForEntityForName(
@@ -24,6 +36,14 @@ class Tag: NSManagedObject {
       
       return tag
   }
+  
+ /**
+  * Creates a fetch request given a title of the tag.
+  *
+  * @param title The title of the tag
+  * @param managedObjectContext The app's managed object context for core data.
+  * @return the fetch request based on a tag title
+  */
   
   class func fetchRequest(title: String, managedObjectContext:
     NSManagedObjectContext?) -> NSFetchRequest {
@@ -37,6 +57,14 @@ class Tag: NSManagedObject {
       return request
   }
   
+ /**
+  * Retrieves a tag based on the given title.
+  *
+  * @param title The title of the tag
+  * @param managedObjectContext The app's managed object context for core data.
+  * @return the instance of a tag with a specific title
+  */
+  
   class func retrieve(title: String, managedObjectContext:
     NSManagedObjectContext?) -> Tag? {
     let request = Tag.fetchRequest(title, managedObjectContext:
@@ -49,8 +77,17 @@ class Tag: NSManagedObject {
         }
     }
     
+    // tag not found
     return nil
   }
+  
+  /**
+  * Returns whether or not a specific tag already exists.
+  *
+  * @param title The title of the tag
+  * @param managedObjectContext The app's managed object context for core data.
+  * @return whether or not the tag exists
+  */
   
   class func exists(title: String, managedObjectContext:
     NSManagedObjectContext?) -> Bool {

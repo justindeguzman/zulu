@@ -12,8 +12,23 @@ import CoreData
 import AddressBook
 import AddressBookUI
 
-class ViewController: UIViewController, UITableViewDelegate,
-UITableViewDataSource, UISearchBarDelegate {
+class ViewController: UIViewController,
+                      UITableViewDelegate,
+                      UITableViewDataSource,
+                      UISearchBarDelegate {
+  
+  // MARK: IBOutlets
+  
+  @IBOutlet weak var logo: UILabel!
+  @IBOutlet weak var tableView: UITableView!
+  @IBOutlet weak var searchBar: UISearchBar!
+  @IBOutlet weak var resultsLabel: UILabel!
+  
+  // MARK: Constraints
+  
+  @IBOutlet weak var logoYConstraint: NSLayoutConstraint!
+  
+  // MARK: Instance Variables
   
   lazy var managedObjectContext : NSManagedObjectContext? = {
     let appDelegate = UIApplication.sharedApplication().delegate as AppDelegate
@@ -30,90 +45,37 @@ UITableViewDataSource, UISearchBarDelegate {
   var savedContacts = [Contact]()
   var openedCells = [Bool]()
   
- /**
-  * UI Elements.
-  */
-  
-  @IBOutlet weak var logo: UILabel!
-  @IBOutlet weak var tableView: UITableView!
-  @IBOutlet weak var searchBar: UISearchBar!
-  @IBOutlet weak var resultsLabel: UILabel!
-  
-  /**
-   * Constraints.
-   */
-  
-  @IBOutlet weak var logoYConstraint: NSLayoutConstraint!
+  // MARK: Instance Methods
   
   override func viewDidLoad() {
     super.viewDidLoad()
-
-    // Register observers to know when the keyboard pops up
-    NSNotificationCenter.defaultCenter().addObserver(self, selector:
-      "keyboardWasShown:", name: UIKeyboardDidShowNotification, object: nil)
-    
-    NSNotificationCenter.defaultCenter().addObserver(self, selector:
-      "keyboardWillBeHidden:", name: UIKeyboardWillHideNotification,
-      object: nil)
-    
     // Close the keyboard when people click anywhere on the screen
     tableView.keyboardDismissMode = UIScrollViewKeyboardDismissMode.OnDrag
     
+    // Add margin at the end of the table view
     tableView.contentInset = UIEdgeInsetsMake(0.0, 0.0, 50.0, 0.0)
     
+    // Load stored address book data from the phone
     self.fetchAddressBookData()
     
-    // Add an event handler to load contacts when the app opens
+    // Add an event handler to load contacts again when the app opens
     NSNotificationCenter.defaultCenter().addObserver(
       self, selector:"fetchAddressBookData",
       name: UIApplicationWillEnterForegroundNotification, object: nil)
   }
   
-  func keyboardWasShown(notification: NSNotification) {
-    //    UIInterfaceOrientation orientation = [[UIApplication sharedApplication] statusBarOrientation];
-    //    CGSize keyboardSize = [[[notif userInfo] objectForKey:UIKeyboardFrameBeginUserInfoKey] CGRectValue].size;
-    //    if (orientation == UIDeviceOrientationLandscapeLeft || orientation == UIDeviceOrientationLandscapeRight ) {
-    //      CGSize origKeySize = keyboardSize;
-    //      keyboardSize.height = origKeySize.width;
-    //      keyboardSize.width = origKeySize.height;
-    //    }
-    //    UIEdgeInsets contentInsets = UIEdgeInsetsMake(0, 0, keyboardSize.height, 0);
-    //    scroller.contentInset = contentInsets;
-    //    scroller.scrollIndicatorInsets = contentInsets;
-    //
-    //    // If active text field is hidden by keyboard, scroll it so it's visible
-    //    // Your application might not need or want this behavior.
-    //    CGRect rect = scroller.frame;
-    //    rect.size.height -= keyboardSize.height;
-    //    NSLog(@"Rect Size Height: %f", rect.size.height);
-    //
-    //    if (!CGRectContainsPoint(rect, activeField.frame.origin)) {
-    //      CGPoint point = CGPointMake(0, activeField.frame.origin.y - keyboardSize.height);
-    //      NSLog(@"Point Height: %f", point.y);
-    //      [scroller setContentOffset:point animated:YES];
-    //    }
-  }
-  
-  func keyboardWillBeHidden(notification: NSNotification) {
-    self.tableView.contentInset = UIEdgeInsetsZero
-    self.tableView.scrollIndicatorInsets = UIEdgeInsetsZero
-  }
-  
-  func searchBarSearchButtonClicked(searchBar: UISearchBar) {
-    searchBar.resignFirstResponder()
-  }
-  
   /**
    * Loads the table view data from core data.
    *
-   * @param contact The contact to be saved.
+   * @param closeCells Whether or not to close all of the table cells.
    */
   
   func loadTableData(closeCells: Bool) {
     let fetchRequest = NSFetchRequest(entityName: "Contact")
+    
+    // Sort results by last name
     let sortDescriptor = NSSortDescriptor(key: "lastName", ascending: true,
       selector: "caseInsensitiveCompare:")
-
     fetchRequest.sortDescriptors = [sortDescriptor]
     
     if let fetchResults = managedObjectContext!.executeFetchRequest(
@@ -128,9 +90,9 @@ UITableViewDataSource, UISearchBarDelegate {
     self.tableView.reloadData()
   }
   
- /**
-  * Fetches the contact data from the address book.
-  */
+  /**
+   * Fetches the contact data from the address book.
+   */
   
   func fetchAddressBookData() {
     // Specify the address book fields to fetch
@@ -143,7 +105,6 @@ UITableViewDataSource, UISearchBarDelegate {
     
     self.addressBook.loadContacts({
       (contacts: [AnyObject]!, error: NSError!) in
-      
       if (contacts != nil) {
         self.moveLogoUp()
         
@@ -152,25 +113,12 @@ UITableViewDataSource, UISearchBarDelegate {
         for contact in contacts {
           if(Contact.create(contact as APContact, managedObjectContext:
             self.managedObjectContext)) {
+              // Close the table cells because a new one was added
               closeCells = true
           }
         }
         
         self.loadTableData(closeCells)
-      } else if (error != nil) {
-        var alert = UIAlertController(
-          title: "Error",
-          message: "Could not load contacts.",
-          preferredStyle: UIAlertControllerStyle.Alert
-        )
-        
-        alert.addAction(UIAlertAction(
-          title: "Ok",
-          style: UIAlertActionStyle.Default,
-          handler: nil)
-        )
-        
-        self.presentViewController(alert, animated: true, completion: nil)
       }
     })
   }
@@ -180,9 +128,7 @@ UITableViewDataSource, UISearchBarDelegate {
    */
   
   func moveLogoUp() {
-    if(!self.logoDidMoveUp) {
-      self.logoDidMoveUp = true
-      
+    if(self.tableView.alpha != 1.0) {
       self.view.layoutIfNeeded()
       let modifier : CGFloat = 0.7
       
@@ -198,103 +144,62 @@ UITableViewDataSource, UISearchBarDelegate {
               self.logoYConstraint.constant -= 130.0
               self.view.layoutIfNeeded()
             }, completion: { finished in
+              
+              // Make the table view and search bar visible
               UIView.animateWithDuration(0.4, animations: {
                 self.tableView.alpha = 1.0
                 self.searchBar.alpha = 1.0
               })
             }
           )
-          
         }
       )
     }
   }
   
+  // MARK: UISearchBar Delegate Methods
+  
   /**
-   * Table View Delegate
+   * Closes the keyboard when the user finishes typing the search query.
+   *
+   * @param searchBar The search bar where the query was inputted.
    */
   
-  func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath:
-    NSIndexPath) {
-      let cellIsOpened = openedCells[indexPath.row]
-      var cell = tableView.cellForRowAtIndexPath(indexPath) as ContactCell
-      
-      if(cellIsOpened) {
-        // Delay hiding the cell contents to allow the cell to collapse
-        dispatch_after(
-          dispatch_time(
-            DISPATCH_TIME_NOW,
-            Int64(0.3 * Double(NSEC_PER_SEC))
-          ),
-          dispatch_get_main_queue(), {
-            cell.buttonCall.hidden = true
-            cell.buttonMessage.hidden = true
-            cell.buttonEmail.hidden = true
-        })
-      } else {
-        cell.showHiddenCellElements(true)
-        
-        if(cell.phoneNumber == "") {
-          cell.buttonCall.alpha = 0.5
-          cell.buttonMessage.alpha = 0.5
-        }
-        
-        if(cell.email == "") {
-          cell.buttonEmail.alpha = 0.5
-        }
-      }
-      
-      openedCells[indexPath.row] = !cellIsOpened
-
-      self.tableView.deselectRowAtIndexPath(indexPath, animated: true)
-      
-      self.tableView.separatorStyle = UITableViewCellSeparatorStyle.None
-      self.tableView.separatorStyle = UITableViewCellSeparatorStyle.SingleLine
-
-      self.tableView.beginUpdates()
-      self.tableView.endUpdates()
+  func searchBarSearchButtonClicked(searchBar: UISearchBar) {
+    searchBar.resignFirstResponder()
   }
   
-  func heightForTextView(text: String, font:UIFont, width:CGFloat) -> CGFloat {
-    let label: UITextView = UITextView(frame: CGRectMake(0, 0, width, CGFloat.max))
-    label.font = font
-    label.text = text
-    label.sizeToFit()
-    return label.frame.height + 50
-  }
+  /**
+   * Event handler that queries core data as the user is typing.
+   *
+   * @param searchBar The search bar where the query was inputted.
+   * @param searchText The user's search query
+   */
   
-  func tableView(tableView: UITableView, heightForRowAtIndexPath
-    indexPath: NSIndexPath) -> CGFloat {
-    if(self.savedContacts.count > 0) {
-      var str = ""
-
-      str += "#engineer #hello #somethingonteuheue #more #hashtag #sevenjeans"
-
-//      let tagViewHeight = heightForTextView(str,
-//        font: UIFont(name: "HelveticaNeue", size: 18.0)!, width: 261.0)
-
-      return openedCells[indexPath.row] ? 350.0: 170.0
-    }
-    
-    return 0.0
-  }
-    
   func searchBar(searchBar: UISearchBar, textDidChange searchText: String) {
     var showResultsLabel = false
     
     let fetchRequest = NSFetchRequest(entityName: "Contact")
     
+    // Sort results by last name
     let sortDescriptor = NSSortDescriptor(key: "lastName", ascending: true,
       selector: "caseInsensitiveCompare:")
+    fetchRequest.sortDescriptors = [sortDescriptor]
     
+    // Add predicates if the user has entered a query
     if(countElements(searchText) > 0) {
+      // Search by first name
       let firstNamePredicate = NSPredicate(format: "firstName CONTAINS[c] %@", argumentArray: [searchText])
+      
+      // Search by last name
       let lastNamePredicate = NSPredicate(format: "lastName CONTAINS[c] %@", argumentArray: [searchText])
       
+      // Search tags
       let tagPredicateFormat = "ANY tags.title CONTAINS[c] '\(searchText)'"
-      
       let tagPredicate = NSPredicate(format: tagPredicateFormat,
         argumentArray: [searchText])
+      
+      // Combine the search predicates
       let compoundPredicate = NSCompoundPredicate(type: NSCompoundPredicateType.OrPredicateType, subpredicates:
         [firstNamePredicate, lastNamePredicate, tagPredicate])
       
@@ -303,15 +208,16 @@ UITableViewDataSource, UISearchBarDelegate {
       showResultsLabel = true
     }
     
-    fetchRequest.sortDescriptors = [sortDescriptor]
-    
+    // Fetch the results from core data
     if let fetchResults = managedObjectContext!.executeFetchRequest(
       fetchRequest, error: nil) as? [Contact] {
         savedContacts = fetchResults
     }
     
+    // Close the table view cells
     openedCells = [Bool](count: savedContacts.count, repeatedValue: false)
     
+    // Update the results label
     if(showResultsLabel) {
       resultsLabel.text = "\(savedContacts.count) Results"
       resultsLabel.hidden = false
@@ -319,19 +225,73 @@ UITableViewDataSource, UISearchBarDelegate {
       resultsLabel.hidden = true
     }
     
+    // Hide the table view if there were no results
     tableView.hidden = savedContacts.count == 0
     
     self.tableView.reloadData()
   }
   
- /**
-  * Table View Data Source
-  */
+  // MARK: UITableView Delegate Methods
+  
+  func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath:
+    NSIndexPath) {
+      // Toggle open or close the cell
+      let cellIsOpened = openedCells[indexPath.row]
+      openedCells[indexPath.row] = !cellIsOpened
+
+      // Bug fix for separater disappearing
+      self.tableView.deselectRowAtIndexPath(indexPath, animated: true)
+      self.tableView.separatorStyle = UITableViewCellSeparatorStyle.None
+      self.tableView.separatorStyle = UITableViewCellSeparatorStyle.SingleLine
+
+      // Apply the changes to the table cell
+      self.tableView.beginUpdates()
+      self.tableView.endUpdates()
+  }
+  
+  /**
+   * Calculates the height of the table view cell depending on whether or not
+   * it's marked open.
+   *
+   * @param tableView The table view that stores the contact data.
+   * @param heightForRowAtIndexPath The index path of the table row to set the
+   *                                height of
+   * @return The height of the table view row.
+   */
+
+  func tableView(tableView: UITableView, heightForRowAtIndexPath
+    indexPath: NSIndexPath) -> CGFloat {
+    if(self.savedContacts.count > 0) {
+      // Returns the larger value if the table cell is marked open
+      return openedCells[indexPath.row] ? 350.0: 170.0
+    }
+    
+    return 0.0
+  }
+  
+  // MARK: UITableView Data Source Methods
+  
+  /**
+   * Calculates the number of table view rows based on the number of saved
+   * contacts.
+   *
+   * @param tableView The table view that stores the contact data.
+   * @param section The section to determine the number of rows
+   * @return The number of rows in the table view (which has only 1 section).
+   */
   
   func tableView(tableView: UITableView, numberOfRowsInSection section: Int)
     -> Int {
       return savedContacts.count
   }
+  
+  /**
+   * Returns the cell based on the given index path.
+   *
+   * @param tableView The table view that stores the contact data.
+   * @param indexPath The index path of the cell.
+   * @return The table view cell at the specified index path.
+   */
   
   func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath:
     NSIndexPath) -> UITableViewCell {
@@ -347,15 +307,12 @@ UITableViewDataSource, UISearchBarDelegate {
       Util.makeCircle(cell.buttonEmail)
       
       if(savedContacts.count > 0) {
-        var name = ""
-        
+        // Retrieve the contact from the saved contacts
         let contact = savedContacts[indexPath.row]
-        
         cell.contact = contact
         
-        if(contact.tags != nil) {
-          cell.updateTagTextView()
-        }
+        // Set the name of the cell
+        var name = ""
         
         if(contact.firstName != nil) {
           name += contact.firstName!
@@ -367,6 +324,12 @@ UITableViewDataSource, UISearchBarDelegate {
         
         cell.name.text = name
         
+        // Set the tags in the cell
+        if(contact.tags != nil) {
+          cell.updateTagTextView()
+        }
+        
+        // Set the call and message values
         if(contact.phone != nil) {
           cell.phoneNumber = contact.phone!
           cell.buttonCall.alpha = 1.0
@@ -376,6 +339,7 @@ UITableViewDataSource, UISearchBarDelegate {
           cell.buttonMessage.alpha = 0.5
         }
         
+        // Set the email values
         if(contact.email != nil) {
           cell.email = contact.email!
           cell.buttonEmail.alpha = 1.0
@@ -383,13 +347,12 @@ UITableViewDataSource, UISearchBarDelegate {
           cell.buttonEmail.alpha = 0.5
         }
         
+        // Set the image if it exists
         if(contact.photo != nil) {
           cell.profilePicture.image = (contact.photo as UIImage)
         } else {
           cell.profilePicture.image = UIImage(named: "default-profile")
         }
-        
-        cell.showHiddenCellElements(openedCells[indexPath.row])
       }
       
       return cell
