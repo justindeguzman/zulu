@@ -16,6 +16,7 @@ class ContactCell: UITableViewCell, UITextFieldDelegate {
   @IBOutlet weak var buttonMessage: UIButton!
   @IBOutlet weak var buttonEmail: UIButton!
   @IBOutlet weak var inputAddTag: UITextField!
+  @IBOutlet weak var tagTextLabel: UILabel!
   
   var contact: Contact?
   var phoneNumber : NSString = ""
@@ -88,8 +89,39 @@ class ContactCell: UITableViewCell, UITextFieldDelegate {
     return nil
   }
   
+  func heightForTextView(text: String, font:UIFont, width:CGFloat) -> CGFloat {
+    let label: UITextView = UITextView(frame: CGRectMake(0, 0, width, CGFloat.max))
+    label.font = font
+    label.text = text
+    label.sizeToFit()
+    return label.frame.height + 50
+  }
+  
+  func updateTagTextView() {
+    var paragraphStyle = NSMutableParagraphStyle()
+    paragraphStyle.lineSpacing = 15
+    paragraphStyle.alignment = NSTextAlignment.Center
+    paragraphStyle.lineBreakMode = NSLineBreakMode.ByWordWrapping
+    
+    var str = ""
+    
+    for tag in contact!.tags! {
+      let currentTag = tag as Tag
+      str += "#\(currentTag.title) "
+    }
+    var attrString = NSMutableAttributedString(string: str)
+    
+    attrString.addAttribute(NSFontAttributeName, value: UIFont(name: "HelveticaNeue-Light", size: 18.0)!, range: NSMakeRange(0, attrString.length))
+    
+    attrString.addAttribute(NSParagraphStyleAttributeName, value:paragraphStyle, range:NSMakeRange(0, attrString.length))
+    
+    self.tagTextLabel.attributedText = attrString
+  }
+  
   func textFieldShouldReturn(textField: UITextField!) -> Bool {
     contact?.addTag(textField.text)
+    updateTagTextView()
+
     textField.text = ""
     textField.resignFirstResponder()
     return true

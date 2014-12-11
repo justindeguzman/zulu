@@ -29,8 +29,6 @@ UITableViewDataSource, UISearchBarDelegate {
   var logoDidMoveUp = false
   var savedContacts = [Contact]()
   var openedCells = [Bool]()
-  var didAddNewContact = false
-
   
  /**
   * UI Elements.
@@ -111,7 +109,7 @@ UITableViewDataSource, UISearchBarDelegate {
    * @param contact The contact to be saved.
    */
   
-  func loadTableData() {
+  func loadTableData(closeCells: Bool) {
     let fetchRequest = NSFetchRequest(entityName: "Contact")
     let sortDescriptor = NSSortDescriptor(key: "lastName", ascending: true,
       selector: "caseInsensitiveCompare:")
@@ -123,9 +121,8 @@ UITableViewDataSource, UISearchBarDelegate {
       savedContacts = fetchResults
     }
     
-    if(didAddNewContact) {
+    if(closeCells) {
       openedCells = [Bool](count: savedContacts.count, repeatedValue: false)
-      didAddNewContact = false
     }
     
     self.tableView.reloadData()
@@ -150,14 +147,16 @@ UITableViewDataSource, UISearchBarDelegate {
       if (contacts != nil) {
         self.moveLogoUp()
         
+        var closeCells = false
+        
         for contact in contacts {
           if(Contact.create(contact as APContact, managedObjectContext:
             self.managedObjectContext)) {
-              self.didAddNewContact = true
+              closeCells = true
           }
         }
         
-        self.loadTableData()
+        self.loadTableData(closeCells)
       } else if (error != nil) {
         var alert = UIAlertController(
           title: "Error",
@@ -225,7 +224,7 @@ UITableViewDataSource, UISearchBarDelegate {
         dispatch_after(
           dispatch_time(
             DISPATCH_TIME_NOW,
-            Int64(0.25 * Double(NSEC_PER_SEC))
+            Int64(0.3 * Double(NSEC_PER_SEC))
           ),
           dispatch_get_main_queue(), {
             cell.buttonCall.hidden = true
@@ -256,10 +255,25 @@ UITableViewDataSource, UISearchBarDelegate {
       self.tableView.endUpdates()
   }
   
+  func heightForTextView(text: String, font:UIFont, width:CGFloat) -> CGFloat {
+    let label: UITextView = UITextView(frame: CGRectMake(0, 0, width, CGFloat.max))
+    label.font = font
+    label.text = text
+    label.sizeToFit()
+    return label.frame.height + 50
+  }
+  
   func tableView(tableView: UITableView, heightForRowAtIndexPath
     indexPath: NSIndexPath) -> CGFloat {
     if(self.savedContacts.count > 0) {
-      return openedCells[indexPath.row] ? 300.0 : 180.0
+      var str = ""
+
+      str += "#engineer #hello #somethingonteuheue #more #hashtag #sevenjeans"
+
+//      let tagViewHeight = heightForTextView(str,
+//        font: UIFont(name: "HelveticaNeue", size: 18.0)!, width: 261.0)
+
+      return openedCells[indexPath.row] ? 350.0: 170.0
     }
     
     return 0.0
@@ -338,6 +352,10 @@ UITableViewDataSource, UISearchBarDelegate {
         let contact = savedContacts[indexPath.row]
         
         cell.contact = contact
+        
+        if(contact.tags != nil) {
+          cell.updateTagTextView()
+        }
         
         if(contact.firstName != nil) {
           name += contact.firstName!
