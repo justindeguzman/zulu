@@ -2,11 +2,14 @@ PODS:
   - APAddressBook (0.1.5):
     - APAddressBook/Core
   - APAddressBook/Core (0.1.5)
+  - TPKeyboardAvoiding (1.2.4)
 
 DEPENDENCIES:
   - APAddressBook (~> 0.1)
+  - TPKeyboardAvoiding (~> 1.2)
 
 SPEC CHECKSUMS:
   APAddressBook: 38bddd264b0d547021d14c8fb22ad64c73663b96
+  TPKeyboardAvoiding: 925e1e1912597d1a4956697eec3bd9656552153c
 
 COCOAPODS: 0.33.1

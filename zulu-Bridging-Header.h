@@ -6,3 +6,5 @@
 #import "APSocialProfile.h"
 #import "APAddress.h"
 #import "APPhoneWithLabel.h"
+
+#import "TPKeyboardAvoidingTableView.h"
